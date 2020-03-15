@@ -2,9 +2,12 @@ namespace WuxiaWorld {
 
     using ConfigServices;
 
+    using DAL.Entities;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -23,16 +26,20 @@ namespace WuxiaWorld {
 
         public void ConfigureServices(IServiceCollection services) {
 
+            //INFO: Customize ServiceCollection
             services.RegisterMvc();
             services.RegisterDInjection();
             services.RegisterMapper();
             services.RegisterJsonFiles(_configurationRoot);
+            services.RegisterRdsDatabaseContext(_configurationRoot);
 
             services.AddOptions();
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WuxiaWorldDbContext dataContext) {
+
+            dataContext.Database.Migrate();
 
             if (env.IsDevelopment()) {
 
@@ -44,6 +51,7 @@ namespace WuxiaWorld {
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            //INFO: Customize ApplicationBuilder
             app.RegisterSslRequired();
             app.RegisterMvcRouting();
 
