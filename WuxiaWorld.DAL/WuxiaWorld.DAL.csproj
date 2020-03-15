@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200315220242_InitialMigration.cs" />
-    <Compile Remove="Migrations\20200315220242_InitialMigration.Designer.cs" />
-    <Compile Remove="Migrations\20200315220327_InitialMigration.cs" />
-    <Compile Remove="Migrations\20200315220327_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200316000553_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200316000553_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200316115116_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200316115116_InitialMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,10 +23,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
 </Project>

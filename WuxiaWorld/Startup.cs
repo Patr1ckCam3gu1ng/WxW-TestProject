@@ -34,7 +34,9 @@ namespace WuxiaWorld {
             services.RegisterRdsDatabaseContext(_configurationRoot);
 
             services.AddOptions();
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            services.AddSpaStaticFiles(configuration => {
+                configuration.RootPath = "ClientApp/build";
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WuxiaWorldDbContext dataContext) {
@@ -55,13 +57,13 @@ namespace WuxiaWorld {
             app.RegisterSslRequired();
             app.RegisterMvcRouting();
 
-            app.UseSpa(spa => {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment()) {
-                    spa.UseReactDevelopmentServer("start");
-                }
-            });
+            // app.UseSpa(spa => {
+            //     spa.Options.SourcePath = "ClientApp";
+            //
+            //     if (env.IsDevelopment()) {
+            //         spa.UseReactDevelopmentServer("start");
+            //     }
+            // });
         }
     }
 

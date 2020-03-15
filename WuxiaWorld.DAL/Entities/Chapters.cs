@@ -27,7 +27,6 @@
         public int ChapterPublishDate { get; set; }
 
         public int NovelId { get; set; }
-
         [ForeignKey("NovelId")]
         public Novels Novels { get; set; }
     }

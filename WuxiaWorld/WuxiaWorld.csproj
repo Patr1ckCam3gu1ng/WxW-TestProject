@@ -57,6 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WuxiaWorld.BLL\WuxiaWorld.BLL.csproj" />
     <ProjectReference Include="..\WuxiaWorld.DAL\WuxiaWorld.DAL.csproj" />
   </ItemGroup>
 

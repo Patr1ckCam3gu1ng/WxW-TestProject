@@ -7,15 +7,7 @@
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => {
-
-                endpoints.MapControllers();
-
-                endpoints.MapControllerRoute(
-                    "default",
-                    "{controller}/{action}/{id?}",
-                    new {controller = "ApplicationNew", action = "Default"});
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             return app;
         }
