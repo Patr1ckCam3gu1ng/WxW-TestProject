@@ -40,7 +40,6 @@ namespace WuxiaWorld {
             }
 
             app.UseHsts();
-            app.UseResponseCompression();
             app.UseStatusCodePages();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
