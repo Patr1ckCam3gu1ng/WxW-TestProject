@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using BLL.Exceptions;
-    using BLL.Services;
     using BLL.Services.Interfaces;
 
     using DAL.Models;

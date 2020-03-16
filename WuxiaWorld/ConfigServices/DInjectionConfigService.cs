@@ -32,6 +32,13 @@
 
             #endregion
 
+            #region Novel Genre
+
+            services.AddScoped<INovelGenreService, NovelGenreService>();
+            services.AddScoped<INovelGenreRepository, NovelGenreRepository>();
+
+            #endregion
+
             return services;
         }
     }

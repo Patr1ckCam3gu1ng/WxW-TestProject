@@ -8,8 +8,10 @@
 
     using DAL.Models;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [AllowAnonymous]
     [Route("api/novels")]
     public class ChapterController : Controller {
         private readonly IChapterService _chapterService;
