@@ -8,7 +8,10 @@
 
     using Exceptions;
 
+    using Interfaces;
+
     using Repositories;
+    using Repositories.Interfaces;
 
     public class NovelService : INovelService {
 

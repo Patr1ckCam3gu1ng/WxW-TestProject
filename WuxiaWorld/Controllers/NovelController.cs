@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using BLL.Exceptions;
-    using BLL.Services;
+    using BLL.Services.Interfaces;
 
     using DAL.Models;
 
@@ -34,13 +34,6 @@
             catch (Exception exception) {
                 return BadRequest(exception.Message);
             }
-        }
-
-        [HttpPost]
-        [Route("{novelId}/publish")]
-        public IActionResult New(int novelId) {
-
-            return Ok();
         }
     }
 

@@ -20,4 +20,9 @@
         }
     }
 
+    public class NovelChapterNumberExistsException : ServiceException {
+        public NovelChapterNumberExistsException(string message) : base(message) {
+        }
+    }
+
 }

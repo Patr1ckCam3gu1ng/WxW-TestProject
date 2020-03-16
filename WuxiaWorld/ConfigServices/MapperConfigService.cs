@@ -16,6 +16,7 @@
             CreateMap<GenreModel, Genres>()
                 .ForMember(c => c.GenreName,
                     f => f.MapFrom(c => c.Name));
+            CreateMap<ChapterModel, Chapters>();
         }
     }
 

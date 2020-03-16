@@ -21,9 +21,6 @@
         [DataType(DataType.DateTime)]
         public DateTime TimeCreated { get; set; }
 
-        [DataType(DataType.DateTime)]
-        public DateTime? TimePublished { get; set; }
-
         public ICollection<Chapters> Chapters { get; set; }
         public ICollection<NovelGenres> NovelGenres { get; set; }
     }

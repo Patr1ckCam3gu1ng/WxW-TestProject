@@ -1,7 +1,9 @@
 ﻿namespace WuxiaWorld.ConfigServices {
 
     using BLL.Repositories;
+    using BLL.Repositories.Interfaces;
     using BLL.Services;
+    using BLL.Services.Interfaces;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +22,13 @@
 
             services.AddScoped<INovelService, NovelService>();
             services.AddScoped<INovelRepository, NovelRepository>();
+
+            #endregion
+
+            #region Chapter
+
+            services.AddScoped<IChapterService, ChapterService>();
+            services.AddScoped<IChapterRepository, ChapterRepository>();
 
             #endregion
 

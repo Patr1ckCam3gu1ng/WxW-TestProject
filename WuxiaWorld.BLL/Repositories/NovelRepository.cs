@@ -8,6 +8,8 @@
     using DAL.Entities;
     using DAL.Models;
 
+    using Interfaces;
+
     using Microsoft.EntityFrameworkCore;
 
     public class NovelRepository : INovelRepository {

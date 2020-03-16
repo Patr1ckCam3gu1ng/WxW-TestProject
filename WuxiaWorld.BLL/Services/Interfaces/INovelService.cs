@@ -1,11 +1,11 @@
-﻿namespace WuxiaWorld.BLL.Repositories {
+﻿namespace WuxiaWorld.BLL.Services.Interfaces {
 
     using System.Threading.Tasks;
 
     using DAL.Entities;
     using DAL.Models;
 
-    public interface INovelRepository {
+    public interface INovelService {
 
         Task<Novels> Create(NovelModel input);
     }

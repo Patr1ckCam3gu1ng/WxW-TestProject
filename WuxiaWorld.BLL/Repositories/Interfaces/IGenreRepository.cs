@@ -1,4 +1,4 @@
-﻿namespace WuxiaWorld.BLL.Repositories {
+﻿namespace WuxiaWorld.BLL.Repositories.Interfaces {
 
     using System.Collections.Generic;
     using System.Threading.Tasks;
