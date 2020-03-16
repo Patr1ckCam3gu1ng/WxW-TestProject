@@ -61,7 +61,7 @@
                 if (!string.IsNullOrEmpty(innerExceptionMessage)) {
 
                     if (innerExceptionMessage.Contains("duplicate key value")) {
-                        throw new GenreAlreadyExistsException("Genre already exists");
+                        throw new RecordAlreadyExistsException("Genre already exists");
                     }
                 }
 

@@ -16,6 +16,13 @@
 
             #endregion
 
+            #region Novel
+
+            services.AddScoped<INovelService, NovelService>();
+            services.AddScoped<INovelRepository, NovelRepository>();
+
+            #endregion
+
             return services;
         }
     }

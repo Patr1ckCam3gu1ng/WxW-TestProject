@@ -12,7 +12,8 @@
     using Microsoft.AspNetCore.Mvc;
 
     [AllowAnonymous]
-    public class GenreController : BaseController {
+    [Route("api/genres")]
+    public class GenreController : Controller {
 
         private readonly IGenreService _genreService;
 
@@ -22,7 +23,6 @@
         }
 
         [HttpGet]
-        [Route("genres")]
         public async Task<IActionResult> Get() {
 
             try {
@@ -37,7 +37,7 @@
         }
 
         [HttpGet]
-        [Route("genres/{genreName}")]
+        [Route("{genreName}")]
         public async Task<IActionResult> Get(string genreName) {
 
             try {
@@ -52,7 +52,6 @@
         }
 
         [HttpPost]
-        [Route("genres")]
         public async Task<IActionResult> New([FromBody] GenreModel input) {
 
             try {
@@ -61,7 +60,7 @@
             catch (NoRecordFoundException) {
                 return NoContent();
             }
-            catch (GenreAlreadyExistsException exception) {
+            catch (RecordAlreadyExistsException exception) {
                 return BadRequest(exception.Message);
             }
             catch (FailedCreatingNewException exception) {

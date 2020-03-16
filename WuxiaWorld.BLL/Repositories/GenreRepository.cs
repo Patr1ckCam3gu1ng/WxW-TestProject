@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using AutoMapper;
+
     using DAL.Entities;
     using DAL.Models;
 
@@ -13,10 +15,12 @@
     public class GenreRepository : IGenreRepository {
 
         private readonly WuxiaWorldDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public GenreRepository(WuxiaWorldDbContext dbContext) {
+        public GenreRepository(WuxiaWorldDbContext dbContext, IMapper mapper) {
 
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(WuxiaWorldDbContext));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(WuxiaWorldDbContext));
         }
 
         public async Task<List<Genres>> GetAll() {
@@ -54,9 +58,7 @@
 
                 await _dbContext.Database.OpenConnectionAsync();
 
-                var newGenre = new Genres {
-                    GenreName = genre.Name
-                };
+                var newGenre = _mapper.Map<Genres>(genre);
 
                 await _dbContext.AddAsync(newGenre);
 

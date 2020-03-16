@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WuxiaWorld.DAL.Entities;
 
 namespace WuxiaWorld.DAL.Migrations
 {
     [DbContext(typeof(WuxiaWorldDbContext))]
-    partial class WuxiaWorldDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200316150000_NewColumn")]
+    partial class NewColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,15 +109,15 @@ namespace WuxiaWorld.DAL.Migrations
                         .HasColumnType("nvarchar(250)")
                         .HasMaxLength(250);
 
+                    b.Property<bool>("PublishedOn")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Synopsis")
                         .IsRequired()
                         .HasColumnType("nvarchar(1500)")
                         .HasMaxLength(1500);
 
                     b.Property<DateTime>("TimeCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("TimePublished")
                         .HasColumnType("datetime2");
 
                     b.HasKey("NovelId");
