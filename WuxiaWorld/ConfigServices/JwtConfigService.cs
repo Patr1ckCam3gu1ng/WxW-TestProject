@@ -13,7 +13,9 @@
     public static class JwtConfigService {
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
-            List<IConfigurationSection> tokenParams) {
+            IConfigurationRoot configurationRoot) {
+
+            var tokenParams = configurationRoot.GetSection("Token").GetChildren().ToList();
 
             var sharedKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(GetValue(tokenParams, "Key")));

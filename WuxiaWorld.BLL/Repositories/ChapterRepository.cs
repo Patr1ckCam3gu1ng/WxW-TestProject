@@ -14,19 +14,27 @@
 
     using Interfaces;
 
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
+    using Microsoft.Extensions.Primitives;
 
     public class ChapterRepository : IChapterRepository {
+        private readonly ICacheRepository _cache;
 
         private readonly int _cancelTokenFromSeconds;
         private readonly WuxiaWorldDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly string _pathValue;
 
-        public ChapterRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken) {
+        public ChapterRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken,
+            IHttpContextAccessor httpContextAccessor, ICacheRepository cache) {
 
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _pathValue = httpContextAccessor.HttpContext.Request.Path.Value ??
+                         throw new ArgumentNullException(nameof(httpContextAccessor));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _cancelTokenFromSeconds = cancelToken.Value.FromSeconds;
         }
 
@@ -49,10 +57,19 @@
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
+            var cacheResult = _cache.GetCache(_pathValue);
+
+            if (cacheResult != null) {
+
+                return cacheResult as Chapters;
+            }
+
             var result = await (
                 from chapter in _dbContext.Chapters
                 where chapter.ChapterNumber == chapterName && chapter.NovelId == novelId
                 select chapter).FirstOrDefaultAsync(ct.Token).ConfigureAwait(false);
+
+            await _cache.CreateAsync(_pathValue, result, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
 
             return result;
         }
@@ -74,16 +91,24 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
+            await _cache.CreateAsync(_pathValue, chapter, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+
             return result == 1 ? chapter : null;
         }
 
-
         public async Task<bool> IsAlreadyPublished(int novelId, int chapterNumber) {
+
+            var cacheResult = _cache.GetCache(_pathValue);
+
+            if (cacheResult != null) {
+
+                return cacheResult is bool;
+            }
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
             var isAlreadyPublished = await _dbContext.Chapters
-                .Where(c => c.NovelId == novelId 
+                .Where(c => c.NovelId == novelId
                             && c.ChapterNumber == chapterNumber
                             && c.ChapterPublishDate != null)
                 .AnyAsync(ct.Token)

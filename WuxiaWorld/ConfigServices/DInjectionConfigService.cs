@@ -41,6 +41,8 @@
 
             services.AddScoped<IAuthenticate, Authenticate>();
 
+            services.AddScoped<ICacheRepository, CacheRepository>();
+
             return services;
         }
     }

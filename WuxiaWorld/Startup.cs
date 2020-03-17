@@ -33,16 +33,17 @@ namespace WuxiaWorld {
             services.RegisterMvc();
             services.RegisterDInjection();
             services.RegisterMapper();
-            services.RegisterJsonFiles(_configurationRoot);
+            services.RegisterAppSetting(_configurationRoot);
             services.RegisterRdsDatabaseContext(_configurationRoot);
 
+            services.AddMemoryCache();
             services.AddOptions();
+            services.AddJwtAuthentication(_configurationRoot);
+            services.AddHttpContextAccessor();
+
             services.AddSpaStaticFiles(configuration => {
                 configuration.RootPath = "ClientApp/build";
             });
-            services.AddJwtAuthentication(_configurationRoot.GetSection("Token").GetChildren().ToList());
-            services.Configure<CancelToken>(_configurationRoot.GetSection("CancelToken"));
-            services.Configure<JwtToken>(_configurationRoot.GetSection("Token"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WuxiaWorldDbContext dataContext) {

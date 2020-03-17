@@ -15,20 +15,28 @@
 
     using Interfaces;
 
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
+    using Microsoft.Extensions.Primitives;
 
     public class NovelRepository : INovelRepository {
+        private readonly ICacheRepository _cache;
 
         private readonly int _cancelTokenFromSeconds;
 
         private readonly WuxiaWorldDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly string _pathValue;
 
-        public NovelRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken) {
+        public NovelRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken,
+            IHttpContextAccessor httpContextAccessor, ICacheRepository cache) {
 
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _pathValue = httpContextAccessor.HttpContext.Request.Path.Value ??
+                         throw new ArgumentNullException(nameof(httpContextAccessor));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _cancelTokenFromSeconds = cancelToken.Value.FromSeconds;
         }
 
@@ -44,12 +52,21 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
+            await _cache.RemoveAsync(_pathValue).ConfigureAwait(false);
+
             return result == 1 ? newNovel : null;
         }
 
         public async Task<List<NovelResult>> GetAll() {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var cacheResult = _cache.GetCache(_pathValue);
+
+            if (cacheResult != null) {
+
+                return cacheResult as List<NovelResult>;
+            }
 
             var query =
                 from novel in _dbContext.Novels
@@ -68,7 +85,12 @@
 
             if (novels != null) {
 
-                return _mapper.Map<List<NovelResult>>(novels);
+                var novelResult = _mapper.Map<List<NovelResult>>(novels);
+
+                await _cache.CreateAsync(_pathValue, novelResult, new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+
+                return novelResult;
             }
 
             throw new NoRecordFoundException(string.Empty);
@@ -78,9 +100,18 @@
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
+            var cacheResult = _cache.GetCache(_pathValue);
+
+            if (cacheResult != null) {
+
+                return cacheResult as Novels;
+            }
+
             var novel = await _dbContext.Novels
                 .FirstOrDefaultAsync(c => c.NovelId == novelId, ct.Token)
                 .ConfigureAwait(false);
+
+            await _cache.CreateAsync(_pathValue, novel, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
 
             return novel;
         }

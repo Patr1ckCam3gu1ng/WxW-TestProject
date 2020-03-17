@@ -8,7 +8,7 @@
 
     public interface IGenreRepository {
 
-        Task<List<Genres>> GetAll();
+        Task<List<Genres>> GetAllAsync();
 
 
         Task<Genres> GetByName(string genreName);

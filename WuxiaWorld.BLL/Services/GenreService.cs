@@ -25,7 +25,7 @@
 
         public async Task<List<Genres>> GetAll() {
 
-            var result = await _genreRepository.GetAll();
+            var result = await _genreRepository.GetAllAsync();
 
             if (result == null) {
                 throw new NoRecordFoundException(string.Empty);
