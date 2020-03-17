@@ -25,4 +25,14 @@
         }
     }
 
+    public class FailedToPublishChapterException : ServiceException {
+        public FailedToPublishChapterException(string message) : base(message) {
+        }
+    }
+
+    public class NovelChapterNotFoundException : ServiceException {
+        public NovelChapterNotFoundException(string message) : base(message) {
+        }
+    }
+
 }

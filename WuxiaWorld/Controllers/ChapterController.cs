@@ -41,9 +41,22 @@
 
         [HttpPost]
         [Route("{novelId}/chapters/{chapterId}/publish")]
-        public IActionResult Publish(int novelId, int chapterId) {
+        public async Task<IActionResult> Publish(int novelId, int chapterId) {
 
-            return Ok();
+            try {
+                var result = await _chapterService.Publish(novelId, chapterId).ConfigureAwait(false);
+
+                return Ok(result);
+            }
+            catch (FailedToPublishChapterException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (NovelChapterNotFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (Exception exception) {
+                return BadRequest(exception.Message);
+            }
         }
     }
 

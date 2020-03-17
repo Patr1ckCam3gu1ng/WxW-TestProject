@@ -1,5 +1,6 @@
 ﻿namespace WuxiaWorld.DAL.Entities {
 
+    using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,7 +25,7 @@
 
         [Required]
         [DataType(DataType.DateTime)]
-        public int ChapterPublishDate { get; set; }
+        public DateTime ChapterPublishDate { get; set; }
 
         public int NovelId { get; set; }
         [ForeignKey("NovelId")]

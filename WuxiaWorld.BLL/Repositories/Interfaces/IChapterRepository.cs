@@ -11,6 +11,9 @@
 
 
         Task<Chapters> GetByChapterNumber(int novelId, int chapterName);
+
+
+        Task<Chapters> Publish(int novelId, int chapterId);
     }
 
 }

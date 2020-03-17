@@ -39,6 +39,18 @@
 
             throw new NovelChapterNumberExistsException("Chapter number already exists in this novel");
         }
+
+        public async Task<Chapters> Publish(int novelId, int chapterId) {
+
+            var result = await _chapterRepository.Publish(novelId, chapterId).ConfigureAwait(false);
+
+            if (result == null) {
+
+                throw new FailedToPublishChapterException("Failed publishing this novel's chapter");
+            }
+
+            return result;
+        }
     }
 
 }

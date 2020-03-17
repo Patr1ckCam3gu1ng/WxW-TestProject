@@ -10,6 +10,8 @@
     using DAL.Entities;
     using DAL.Models;
 
+    using Exceptions;
+
     using Interfaces;
 
     using Microsoft.EntityFrameworkCore;
@@ -62,6 +64,32 @@
                     select chapter).FirstOrDefaultAsync(ct.Token).ConfigureAwait(false);
 
                 return result;
+            }
+        }
+
+        public async Task<Chapters> Publish(int novelId, int chapterId) {
+
+            using (_dbContext) {
+
+                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
+
+                var chapter = await _dbContext.Chapters
+                    .Where(c => c.NovelId == novelId && c.ChapterId == chapterId)
+                    .FirstOrDefaultAsync()
+                    .ConfigureAwait(false);
+
+                if (chapter != null) {
+
+                    chapter.ChapterPublishDate = DateTime.UtcNow;
+
+                    var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+                    var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
+
+                    return result == 1 ? chapter : null;
+                }
+
+                throw new NovelChapterNotFoundException("Record not found");
             }
         }
     }
