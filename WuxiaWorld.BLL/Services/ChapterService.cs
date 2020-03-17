@@ -3,6 +3,8 @@
     using System;
     using System.Threading.Tasks;
 
+    using AutoMapper;
+
     using DAL.Entities;
     using DAL.Models;
 
@@ -15,34 +17,52 @@
     public class ChapterService : IChapterService {
 
         private readonly IChapterRepository _chapterRepository;
+        private readonly INovelService _novelService;
+        private readonly IMapper _mapper;
 
-        public ChapterService(IChapterRepository chapterRepository) {
+        public ChapterService(IChapterRepository chapterRepository, INovelService novelService, IMapper mapper) {
 
             _chapterRepository = chapterRepository ?? throw new ArgumentNullException(nameof(chapterRepository));
+            _novelService = novelService ?? throw new ArgumentNullException(nameof(chapterRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(chapterRepository));
         }
 
-        public async Task<Chapters> Create(int novelId, ChapterModel input) {
+        public async Task<ChapterModel> Create(int novelId, ChapterModel input) {
 
             var novelByChapterNumber = await _chapterRepository.GetByChapterNumber(novelId, input.ChapterNumber);
 
             // INFO: This means that the chapter number does not yet exists within the novel
             if (novelByChapterNumber == null) {
 
-                var novelChapter = await _chapterRepository.Create(novelId, input);
+                var novel = await _novelService.GetById(novelId).ConfigureAwait(false);
 
-                if (novelChapter == null) {
-                    throw new FailedCreatingNewException("Failed creating new novel chapter");
+                if (novel != null) {
+
+                    var novelChapter = await _chapterRepository.Create(novelId, input);
+
+                    if (novelChapter == null)
+                    {
+                        throw new FailedCreatingNewException("Failed creating new novel chapter");
+                    }
+
+                    return _mapper.Map<ChapterModel>(novelChapter);
                 }
 
-                return novelChapter;
+                throw new NoRecordFoundException("Novel not found");
             }
 
             throw new NovelChapterNumberExistsException("Chapter number already exists in this novel");
         }
 
-        public async Task<Chapters> Publish(int novelId, int chapterId) {
+        public async Task<Chapters> Publish(int novelId, int chapterNumber) {
 
-            var result = await _chapterRepository.Publish(novelId, chapterId).ConfigureAwait(false);
+            var isAlreadyPublished = await _chapterRepository.IsAlreadyPublished(novelId, chapterNumber).ConfigureAwait(false);
+
+            if (isAlreadyPublished) {
+                throw new ChapterAlreadyPublished("Chapter is already published");
+            }
+
+            var result = await _chapterRepository.Publish(novelId, chapterNumber).ConfigureAwait(false);
 
             if (result == null) {
                 throw new FailedToPublishChapterException("Failed publishing this novel's chapter");

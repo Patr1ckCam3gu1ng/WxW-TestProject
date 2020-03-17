@@ -57,7 +57,7 @@ namespace WuxiaWorld.DAL.Migrations
                     ChapterName = table.Column<string>(maxLength: 250, nullable: false),
                     Content = table.Column<string>(maxLength: 2147483647, nullable: false),
                     TimeRead = table.Column<int>(nullable: false),
-                    ChapterPublishDate = table.Column<DateTime>(nullable: false),
+                    ChapterPublishDate = table.Column<DateTime>(nullable: true),
                     NovelId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

@@ -3,8 +3,12 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    using Newtonsoft.Json;
+
     public class NovelGenres {
+
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         [Required]

@@ -35,7 +35,6 @@ namespace WuxiaWorld.DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ChapterPublishDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Content")

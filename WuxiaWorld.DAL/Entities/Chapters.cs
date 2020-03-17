@@ -4,9 +4,12 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    using Newtonsoft.Json;
+
     public class Chapters {
 
         [Key]
+        [JsonIgnore]
         public int ChapterId { get; set; }
 
         [Required]
@@ -23,11 +26,13 @@
         [Required]
         public int TimeRead { get; set; }
 
-        [Required]
         [DataType(DataType.DateTime)]
         public DateTime? ChapterPublishDate { get; set; }
 
+        [JsonIgnore]
         public int NovelId { get; set; }
+
+        [JsonIgnore]
         [ForeignKey("NovelId")]
         public Novels Novels { get; set; }
     }

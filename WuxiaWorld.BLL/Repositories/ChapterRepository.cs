@@ -38,7 +38,7 @@
 
             novelChapter.NovelId = novelId;
 
-            await _dbContext.Chapters.AddAsync(novelChapter, ct.Token).ConfigureAwait(false);
+            await _dbContext.AddAsync(novelChapter, ct.Token).ConfigureAwait(false);
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
@@ -57,12 +57,12 @@
             return result;
         }
 
-        public async Task<Chapters> Publish(int novelId, int chapterId) {
+        public async Task<Chapters> Publish(int novelId, int chapterNumber) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
             var chapter = await _dbContext.Chapters
-                .Where(c => c.NovelId == novelId && c.ChapterId == chapterId)
+                .Where(c => c.NovelId == novelId && c.ChapterNumber == chapterNumber)
                 .FirstOrDefaultAsync(ct.Token)
                 .ConfigureAwait(false);
 
@@ -75,6 +75,21 @@
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
             return result == 1 ? chapter : null;
+        }
+
+
+        public async Task<bool> IsAlreadyPublished(int novelId, int chapterNumber) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var isAlreadyPublished = await _dbContext.Chapters
+                .Where(c => c.NovelId == novelId 
+                            && c.ChapterNumber == chapterNumber
+                            && c.ChapterPublishDate != null)
+                .AnyAsync(ct.Token)
+                .ConfigureAwait(false);
+
+            return isAlreadyPublished;
         }
     }
 

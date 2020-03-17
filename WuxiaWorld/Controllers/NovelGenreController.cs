@@ -35,8 +35,8 @@
 
                 return Ok();
             }
-            catch (NoRecordFoundException) {
-                return NoContent();
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
             }
             catch (NovelNotFoundException exception) {
                 return BadRequest(exception.Message);

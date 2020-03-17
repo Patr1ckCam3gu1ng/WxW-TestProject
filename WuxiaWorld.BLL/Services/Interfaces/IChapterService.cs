@@ -7,10 +7,10 @@
 
     public interface IChapterService {
 
-        Task<Chapters> Create(int novelId, ChapterModel input);
+        Task<ChapterModel> Create(int novelId, ChapterModel input);
 
 
-        Task<Chapters> Publish(int novelId, int chapterId);
+        Task<Chapters> Publish(int novelId, int chapterNumber);
     }
 
 }

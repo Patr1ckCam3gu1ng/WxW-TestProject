@@ -11,7 +11,7 @@
         Task<Novels> Create(NovelModel input);
 
 
-        Task<List<Novels>> GetAll();
+        Task<List<NovelResult>> GetAll();
 
 
         Task<Novels> GetById(int novelId);

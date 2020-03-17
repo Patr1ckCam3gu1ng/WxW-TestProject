@@ -10,7 +10,7 @@ using WuxiaWorld.DAL.Entities;
 namespace WuxiaWorld.DAL.Migrations
 {
     [DbContext(typeof(WuxiaWorldDbContext))]
-    [Migration("20200317094925_InitialMigration")]
+    [Migration("20200317120839_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,6 @@ namespace WuxiaWorld.DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ChapterPublishDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Content")

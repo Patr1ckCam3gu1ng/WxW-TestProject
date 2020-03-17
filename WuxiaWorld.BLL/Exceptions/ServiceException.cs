@@ -45,4 +45,9 @@
         }
     }
 
+    public class ChapterAlreadyPublished : ServiceException {
+        public ChapterAlreadyPublished(string message) : base(message) {
+        }
+    }
+
 }

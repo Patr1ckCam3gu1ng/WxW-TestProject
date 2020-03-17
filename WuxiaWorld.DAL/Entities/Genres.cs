@@ -1,7 +1,7 @@
 ﻿namespace WuxiaWorld.DAL.Entities {
 
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     using Newtonsoft.Json;
 
@@ -15,6 +15,8 @@
         [StringLength(50)]
         [JsonProperty("Name")]
         public string GenreName { get; set; }
+
+        public ICollection<NovelGenres> NovelGenres { get; set; }
     }
 
 }

@@ -27,9 +27,11 @@
 
         public async Task<bool> Assign(int novelId, List<int> genreIds) {
 
-            // INFO: This will throw an exception error if no novel were found by id
-            await _novelRepository.GetById(novelId).ConfigureAwait(false);
+            var novel = await _novelRepository.GetById(novelId).ConfigureAwait(false);
 
+            if (novel == null) {
+                throw new NoRecordFoundException("Novel not found");
+            }
             var genres = await _genreRepository.GetById(genreIds).ConfigureAwait(false);
 
             // INFO: If not on equal count, meaning one or more genre id is not on database or no longer exists

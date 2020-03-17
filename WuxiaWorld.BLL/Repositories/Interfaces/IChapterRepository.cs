@@ -13,7 +13,10 @@
         Task<Chapters> GetByChapterNumber(int novelId, int chapterName);
 
 
-        Task<Chapters> Publish(int novelId, int chapterId);
+        Task<Chapters> Publish(int novelId, int chapterNumber);
+
+
+        Task<bool> IsAlreadyPublished(int novelId, int chapterNumber);
     }
 
 }

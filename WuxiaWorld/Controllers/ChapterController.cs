@@ -36,24 +36,30 @@
             catch (NovelChapterNumberExistsException exception) {
                 return BadRequest(exception.Message);
             }
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
+            }
             catch (Exception exception) {
                 return BadRequest(exception.Message);
             }
         }
 
         [HttpPost]
-        [Route("{novelId}/chapters/{chapterId}/publish")]
-        public async Task<IActionResult> Publish(int novelId, int chapterId) {
+        [Route("{novelId}/chapters/{chapterNumber}/publish")]
+        public async Task<IActionResult> Publish(int novelId, int chapterNumber) {
 
             try {
                 return Ok(await _chapterService
-                    .Publish(novelId, chapterId)
+                    .Publish(novelId, chapterNumber)
                     .ConfigureAwait(false));
             }
             catch (FailedToPublishChapterException exception) {
                 return BadRequest(exception.Message);
             }
             catch (NovelChapterNotFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (ChapterAlreadyPublished exception) {
                 return BadRequest(exception.Message);
             }
             catch (Exception exception) {

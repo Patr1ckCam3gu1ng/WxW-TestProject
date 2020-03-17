@@ -34,7 +34,7 @@
             return newNovel;
         }
 
-        public async Task<List<Novels>> GetAll() {
+        public async Task<List<NovelResult>> GetAll() {
 
             return await _novelRepository.GetAll().ConfigureAwait(false);
         }
