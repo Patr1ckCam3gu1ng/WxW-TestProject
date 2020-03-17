@@ -9,12 +9,14 @@
 
     using DAL.Models;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [AllowAnonymous]
     [Route("api/novels")]
     [TypeFilter(typeof(DbContextActionFilter))]
+    [TypeFilter(typeof(AdminOnlyActionFilter))]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChapterController : Controller {
         private readonly IChapterService _chapterService;
 

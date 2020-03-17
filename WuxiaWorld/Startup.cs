@@ -1,5 +1,7 @@
 namespace WuxiaWorld {
 
+    using System.Linq;
+
     using ConfigServices;
 
     using DAL.Entities;
@@ -38,8 +40,9 @@ namespace WuxiaWorld {
             services.AddSpaStaticFiles(configuration => {
                 configuration.RootPath = "ClientApp/build";
             });
-
+            services.AddJwtAuthentication(_configurationRoot.GetSection("Token").GetChildren().ToList());
             services.Configure<CancelToken>(_configurationRoot.GetSection("CancelToken"));
+            services.Configure<JwtToken>(_configurationRoot.GetSection("Token"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WuxiaWorldDbContext dataContext) {

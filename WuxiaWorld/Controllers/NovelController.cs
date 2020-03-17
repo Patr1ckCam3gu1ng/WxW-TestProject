@@ -9,11 +9,12 @@
 
     using DAL.Models;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [AllowAnonymous]
     [Route("api/novels")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [TypeFilter(typeof(DbContextActionFilter))]
     public class NovelController : Controller {
 
@@ -47,6 +48,7 @@
         }
 
         [HttpPost]
+        [TypeFilter(typeof(AdminOnlyActionFilter))]
         public async Task<IActionResult> New([FromBody] NovelModel input) {
 
             try {

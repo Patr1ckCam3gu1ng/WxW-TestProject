@@ -39,6 +39,8 @@
 
             #endregion
 
+            services.AddScoped<IAuthenticate, Authenticate>();
+
             return services;
         }
     }

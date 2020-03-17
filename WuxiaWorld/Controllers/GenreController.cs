@@ -9,12 +9,13 @@
 
     using DAL.Models;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [AllowAnonymous]
     [Route("api/genres")]
     [TypeFilter(typeof(DbContextActionFilter))]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GenreController : Controller {
 
         private readonly IGenreService _genreService;
@@ -54,6 +55,7 @@
         }
 
         [HttpPost]
+        [TypeFilter(typeof(AdminOnlyActionFilter))]
         public async Task<IActionResult> New([FromBody] GenreModel input) {
 
             try {

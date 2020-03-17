@@ -9,12 +9,14 @@
 
     using DAL.Models;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [AllowAnonymous]
     [Route("api/novels")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [TypeFilter(typeof(DbContextActionFilter))]
+    [TypeFilter(typeof(AdminOnlyActionFilter))]
     public class NovelGenreController : Controller {
 
         private readonly INovelGenreService _novelGenreService;
