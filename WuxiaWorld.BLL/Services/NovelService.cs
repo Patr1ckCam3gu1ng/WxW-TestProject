@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.BLL.Services {
 
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using DAL.Entities;
@@ -10,7 +11,6 @@
 
     using Interfaces;
 
-    using Repositories;
     using Repositories.Interfaces;
 
     public class NovelService : INovelService {
@@ -24,7 +24,7 @@
 
         public async Task<Novels> Create(NovelModel input) {
 
-            var newNovel = await _novelRepository.Create(input);
+            var newNovel = await _novelRepository.Create(input).ConfigureAwait(false);
 
             if (newNovel == null) {
 
@@ -32,6 +32,16 @@
             }
 
             return newNovel;
+        }
+
+        public async Task<List<Novels>> GetAll() {
+
+            return await _novelRepository.GetAll().ConfigureAwait(false);
+        }
+
+        public async Task<Novels> GetById(int novelId) {
+
+            return await _novelRepository.GetById(novelId);
         }
     }
 

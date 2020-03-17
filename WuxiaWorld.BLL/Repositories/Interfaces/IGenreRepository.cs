@@ -15,6 +15,9 @@
 
 
         Task<Genres> Create(GenreModel genre);
+
+
+        Task<List<Genres>> GetById(List<int> genreIds);
     }
 
 }

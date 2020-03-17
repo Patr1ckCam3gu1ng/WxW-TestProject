@@ -35,4 +35,9 @@
         }
     }
 
+    public class OneOrMoreGenreNotFoundException : ServiceException {
+        public OneOrMoreGenreNotFoundException(string message) : base(message) {
+        }
+    }
+
 }

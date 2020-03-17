@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
+    using BLL.ActionFilters;
     using BLL.Exceptions;
     using BLL.Services.Interfaces;
 
@@ -13,6 +14,7 @@
 
     [AllowAnonymous]
     [Route("api/genres")]
+    [TypeFilter(typeof(DbContextActionFilter))]
     public class GenreController : Controller {
 
         private readonly IGenreService _genreService;

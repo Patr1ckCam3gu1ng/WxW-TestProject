@@ -3,7 +3,9 @@
     using System;
     using System.Threading.Tasks;
 
-    using BLL.Services;
+    using BLL.ActionFilters;
+    using BLL.Exceptions;
+    using BLL.Services.Interfaces;
 
     using DAL.Models;
 
@@ -12,11 +14,12 @@
 
     [AllowAnonymous]
     [Route("api/novels")]
+    [TypeFilter(typeof(DbContextActionFilter))]
     public class NovelGenreController : Controller {
 
-        private readonly NovelGenreService _novelGenreService;
+        private readonly INovelGenreService _novelGenreService;
 
-        public NovelGenreController(NovelGenreService novelGenreService) {
+        public NovelGenreController(INovelGenreService novelGenreService) {
 
             _novelGenreService = novelGenreService ?? throw new ArgumentNullException(nameof(novelGenreService));
         }
@@ -25,9 +28,15 @@
         [Route("{novelId}/genre")]
         public async Task<IActionResult> Publish(int novelId, [FromBody] NovelGenreModel input) {
 
-            await _novelGenreService.Assign(novelId, input.GenreIds).ConfigureAwait(false);
+            try
+            {
+                await _novelGenreService.Assign(novelId, input.GenreIds).ConfigureAwait(false);
 
-            return Ok();
+                return Ok();
+            }
+            catch (NoRecordFoundException exception) {
+                return NoContent();
+            }
         }
     }
 

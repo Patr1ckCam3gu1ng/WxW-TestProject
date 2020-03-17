@@ -31,58 +31,54 @@
 
         public async Task<List<Genres>> GetAll() {
 
-            using (_dbContext) {
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
+            var genres = await (
+                    from genre in _dbContext.Genres
+                    select genre).ToListAsync(ct.Token)
+                .ConfigureAwait(false);
 
-                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
-
-                var genres = await (
-                        from genre in _dbContext.Genres
-                        select genre).ToListAsync(ct.Token)
-                    .ConfigureAwait(false);
-
-                return genres;
-            }
+            return genres;
         }
 
         public async Task<Genres> GetByName(string genreName) {
 
-            using (_dbContext) {
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
+            var result = await (
+                    from genre in _dbContext.Genres
+                    where genre.GenreName.ToLower().Equals(genreName.ToLower())
+                    select genre).FirstOrDefaultAsync(ct.Token)
+                .ConfigureAwait(false);
 
-                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
-
-                var result = await (
-                        from genre in _dbContext.Genres
-                        where genre.GenreName.ToLower().Equals(genreName.ToLower())
-                        select genre).FirstOrDefaultAsync(ct.Token)
-                    .ConfigureAwait(false);
-
-                return result;
-            }
+            return result;
         }
 
         public async Task<Genres> Create(GenreModel genre) {
+            
+            var newGenre = _mapper.Map<Genres>(genre);
 
-            using (_dbContext) {
+            await _dbContext.AddAsync(newGenre).ConfigureAwait(false);
 
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                var newGenre = _mapper.Map<Genres>(genre);
+            var result = await _dbContext
+                .SaveChangesAsync(ct.Token)
+                .ConfigureAwait(false);
 
-                await _dbContext.AddAsync(newGenre).ConfigureAwait(false);
+            return result == 1 ? newGenre : null;
+        }
 
-                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+        public async Task<List<Genres>> GetById(List<int> genreIds) {
 
-                var result = await _dbContext
-                    .SaveChangesAsync(ct.Token)
-                    .ConfigureAwait(false);
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                return result == 1 ? newGenre : null;
+            var genres = await _dbContext.Genres
+                .Where(c => genreIds.Any(f => f == c.GenreId))
+                .ToListAsync(ct.Token)
+                .ConfigureAwait(false);
 
-            }
+            return genres;
         }
     }
 

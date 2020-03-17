@@ -5,13 +5,17 @@
 
     public class NovelGenres {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
+        [Required]
         public int GenreId { get; set; }
+
         [ForeignKey("GenreId")]
         public Genres Genres { get; set; }
 
+        [Required]
         public int NovelId { get; set; }
+
         [ForeignKey("NovelId")]
         public Novels Novels { get; set; }
     }

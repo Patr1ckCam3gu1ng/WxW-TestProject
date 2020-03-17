@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
+    using BLL.ActionFilters;
     using BLL.Exceptions;
     using BLL.Services.Interfaces;
 
@@ -13,6 +14,7 @@
 
     [AllowAnonymous]
     [Route("api/novels")]
+    [TypeFilter(typeof(DbContextActionFilter))]
     public class ChapterController : Controller {
         private readonly IChapterService _chapterService;
 

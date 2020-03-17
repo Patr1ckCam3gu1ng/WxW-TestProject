@@ -10,8 +10,8 @@ using WuxiaWorld.DAL.Entities;
 namespace WuxiaWorld.DAL.Migrations
 {
     [DbContext(typeof(WuxiaWorldDbContext))]
-    [Migration("20200316121047_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20200317065914_InitialMigrationv.1")]
+    partial class InitialMigrationv1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,8 +36,8 @@ namespace WuxiaWorld.DAL.Migrations
                     b.Property<int>("ChapterNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("ChapterPublishDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ChapterPublishDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -79,8 +79,10 @@ namespace WuxiaWorld.DAL.Migrations
 
             modelBuilder.Entity("WuxiaWorld.DAL.Entities.NovelGenres", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("GenreId")
                         .HasColumnType("int");

@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@
     using Microsoft.Extensions.Options;
 
     public class NovelGenreRepository : INovelGenreRepository {
+
         private readonly int _cancelTokenFromSeconds;
 
         private readonly WuxiaWorldDbContext _dbContext;
@@ -26,37 +28,39 @@
 
         public async Task<bool> Assign(int novelId, List<int> genreIds) {
 
-            using (_dbContext) {
+            // INFO: Delete first the existing records
 
-                // INFO: Delete first the existing records
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                var novel = await _dbContext.Novels
-                    .FirstOrDefaultAsync(c => c.NovelId == novelId)
-                    .ConfigureAwait(false);
+            var novels = await _dbContext.NovelGenres
+                .Where(c => c.NovelId == novelId)
+                .ToListAsync(ct.Token)
+                .ConfigureAwait(false);
 
-                _dbContext.Remove(novel);
-
-                // INFO: Then lets re insert the new ones
-
-                foreach (var genreId in genreIds) {
-
-                    await _dbContext.NovelGenres
-                        .AddAsync(
-                            new NovelGenres {
-                                GenreId = genreId,
-                                NovelId = novelId
-                            })
-                        .ConfigureAwait(false);
+            if (novels != null) {
+                if (novels.Count > 0) {
+                    _dbContext.RemoveRange(novels);
                 }
-
-                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
-
-                var result = await _dbContext
-                    .SaveChangesAsync(ct.Token)
-                    .ConfigureAwait(false);
-
-                return result == 1;
             }
+
+            // INFO: Then lets re insert the new ones
+
+            foreach (var genreId in genreIds) {
+
+                await _dbContext.NovelGenres
+                    .AddAsync(
+                        new NovelGenres {
+                            GenreId = genreId,
+                            NovelId = novelId
+                        }, ct.Token)
+                    .ConfigureAwait(false);
+            }
+
+            var result = await _dbContext
+                .SaveChangesAsync(ct.Token)
+                .ConfigureAwait(false);
+
+            return result == 1;
         }
     }
 

@@ -32,65 +32,50 @@
 
         public async Task<Chapters> Create(int novelId, ChapterModel input) {
 
-            using (_dbContext) {
+            var novelChapter = _mapper.Map<Chapters>(input);
 
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
+            novelChapter.NovelId = novelId;
 
-                var novelChapter = _mapper.Map<Chapters>(input);
+            await _dbContext.AddAsync(novelChapter).ConfigureAwait(false);
 
-                novelChapter.NovelId = novelId;
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                await _dbContext.AddAsync(novelChapter).ConfigureAwait(false);
+            var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
+
+            return result == 1 ? novelChapter : null;
+        }
+
+        public async Task<Chapters> GetByChapterNumber(int novelId, int chapterName) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var result = await (
+                from chapter in _dbContext.Chapters
+                where chapter.ChapterNumber == chapterName && chapter.NovelId == novelId
+                select chapter).FirstOrDefaultAsync(ct.Token).ConfigureAwait(false);
+
+            return result;
+        }
+
+        public async Task<Chapters> Publish(int novelId, int chapterId) {
+
+            var chapter = await _dbContext.Chapters
+                .Where(c => c.NovelId == novelId && c.ChapterId == chapterId)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+
+            if (chapter != null) {
+
+                chapter.ChapterPublishDate = DateTime.UtcNow;
 
                 var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
                 var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-                return result == 1 ? novelChapter : null;
+                return result == 1 ? chapter : null;
             }
-        }
 
-        public async Task<Chapters> GetByChapterNumber(int novelId, int chapterName) {
-
-            using (_dbContext) {
-
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
-
-                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
-
-                var result = await (
-                    from chapter in _dbContext.Chapters
-                    where chapter.ChapterNumber == chapterName && chapter.NovelId == novelId
-                    select chapter).FirstOrDefaultAsync(ct.Token).ConfigureAwait(false);
-
-                return result;
-            }
-        }
-
-        public async Task<Chapters> Publish(int novelId, int chapterId) {
-
-            using (_dbContext) {
-
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
-
-                var chapter = await _dbContext.Chapters
-                    .Where(c => c.NovelId == novelId && c.ChapterId == chapterId)
-                    .FirstOrDefaultAsync()
-                    .ConfigureAwait(false);
-
-                if (chapter != null) {
-
-                    chapter.ChapterPublishDate = DateTime.UtcNow;
-
-                    var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
-
-                    var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
-
-                    return result == 1 ? chapter : null;
-                }
-
-                throw new NovelChapterNotFoundException("Record not found");
-            }
+            throw new NovelChapterNotFoundException("Record not found");
         }
     }
 

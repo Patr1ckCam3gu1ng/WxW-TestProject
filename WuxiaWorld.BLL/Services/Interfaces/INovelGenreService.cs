@@ -5,7 +5,7 @@
 
     public interface INovelGenreService {
 
-        Task<bool> Assign(int novelId, List<int> inputGenreIds);
+        Task<bool> Assign(int novelId, List<int> genreIds);
     }
 
 }

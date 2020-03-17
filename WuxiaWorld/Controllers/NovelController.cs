@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
+    using BLL.ActionFilters;
     using BLL.Exceptions;
     using BLL.Services.Interfaces;
 
@@ -13,6 +14,7 @@
 
     [AllowAnonymous]
     [Route("api/novels")]
+    [TypeFilter(typeof(DbContextActionFilter))]
     public class NovelController : Controller {
 
         private readonly INovelService _novelService;
@@ -20,6 +22,28 @@
         public NovelController(INovelService novelService) {
 
             _novelService = novelService ?? throw new ArgumentNullException(nameof(novelService));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get() {
+
+            try {
+                return Ok(await _novelService.GetAll());
+            }
+            catch (NoRecordFoundException exception) {
+                return NoContent();
+            }
+        }
+
+        [HttpGet("{novelId}")]
+        public async Task<IActionResult> GetById(int novelId) {
+
+            try {
+                return Ok(await _novelService.GetById(novelId));
+            }
+            catch (NoRecordFoundException) {
+                return NoContent();
+            }
         }
 
         [HttpPost]

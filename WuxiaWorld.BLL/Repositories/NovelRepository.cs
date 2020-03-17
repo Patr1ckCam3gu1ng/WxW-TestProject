@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.BLL.Repositories {
 
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@
     using DAL.Entities;
     using DAL.Models;
 
+    using Exceptions;
+
     using Interfaces;
 
     using Microsoft.EntityFrameworkCore;
@@ -16,9 +19,10 @@
 
     public class NovelRepository : INovelRepository {
 
+        private readonly int _cancelTokenFromSeconds;
+
         private readonly WuxiaWorldDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly int _cancelTokenFromSeconds;
 
         public NovelRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken) {
 
@@ -29,22 +33,48 @@
 
         public async Task<Novels> Create(NovelModel input) {
 
-            using (_dbContext) {
+            var newNovel = _mapper.Map<Novels>(input);
 
-                await _dbContext.Database.OpenConnectionAsync().ConfigureAwait(false);
+            newNovel.TimeCreated = DateTime.UtcNow;
 
-                var newNovel = _mapper.Map<Novels>(input);
+            await _dbContext.AddAsync(newNovel).ConfigureAwait(false);
 
-                newNovel.TimeCreated = DateTime.UtcNow;
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                await _dbContext.AddAsync(newNovel).ConfigureAwait(false);
+            var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+            return result == 1 ? newNovel : null;
+        }
 
-                var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
+        public async Task<List<Novels>> GetAll() {
 
-                return result == 1 ? newNovel : null;
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var novels = await _dbContext.Novels.ToListAsync(ct.Token).ConfigureAwait(false);
+
+            if (novels.Count > 0) {
+
+                return novels;
             }
+
+            throw new NoRecordFoundException(string.Empty);
+        }
+
+        public async Task<Novels> GetById(int novelId) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var novel = await _dbContext.Novels
+                .FirstOrDefaultAsync(c => c.NovelId == novelId, ct.Token)
+                .ConfigureAwait(false);
+
+            if (novel == null) {
+
+                throw new NoRecordFoundException(string.Empty);
+            }
+
+            return novel;
+
         }
     }
 
