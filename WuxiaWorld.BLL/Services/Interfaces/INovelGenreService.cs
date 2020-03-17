@@ -1,10 +1,11 @@
 ﻿namespace WuxiaWorld.BLL.Services.Interfaces {
 
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public interface INovelGenreService {
 
-        void Assign(int novelId, List<int> inputGenreIds);
+        Task<bool> Assign(int novelId, List<int> inputGenreIds);
     }
 
 }

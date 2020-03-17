@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Interfaces;
 
@@ -17,11 +18,9 @@
                 novelGenreRepository ?? throw new ArgumentNullException(nameof(novelGenreRepository));
         }
 
-        public void Assign(int novelId, List<int> inputGenreIds) {
+        public async Task<bool> Assign(int novelId, List<int> inputGenreIds) {
 
-            xx
-
-            throw new NotImplementedException();
+            return await _novelGenreRepository.Assign(novelId, inputGenreIds).ConfigureAwait(false);
         }
     }
 

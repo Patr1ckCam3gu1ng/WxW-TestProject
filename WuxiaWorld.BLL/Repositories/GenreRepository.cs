@@ -21,8 +21,8 @@
 
         public GenreRepository(WuxiaWorldDbContext dbContext, IMapper mapper) {
 
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(WuxiaWorldDbContext));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(WuxiaWorldDbContext));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<List<Genres>> GetAll() {

@@ -3,6 +3,7 @@ namespace WuxiaWorld {
     using ConfigServices;
 
     using DAL.Entities;
+    using DAL.Models;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,8 @@ namespace WuxiaWorld {
             services.AddSpaStaticFiles(configuration => {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.Configure<CancelToken>(_configurationRoot.GetSection("CancelToken"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WuxiaWorldDbContext dataContext) {

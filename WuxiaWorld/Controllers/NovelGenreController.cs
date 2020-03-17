@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.Controllers {
 
     using System;
+    using System.Threading.Tasks;
 
     using BLL.Services;
 
@@ -22,9 +23,9 @@
 
         [HttpPost]
         [Route("{novelId}/genre")]
-        public IActionResult Publish(int novelId, [FromBody] NovelGenreModel input) {
+        public async Task<IActionResult> Publish(int novelId, [FromBody] NovelGenreModel input) {
 
-            _novelGenreService.Assign(novelId, input.GenreIds);
+            await _novelGenreService.Assign(novelId, input.GenreIds).ConfigureAwait(false);
 
             return Ok();
         }

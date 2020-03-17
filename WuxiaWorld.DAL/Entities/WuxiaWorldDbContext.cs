@@ -12,9 +12,10 @@
         }
 
         public virtual DbSet<Genres> Genres { get; set; }
-        public DbSet<Novels> Novels { get; set; }
-        public DbSet<Chapters> Chapters { get; set; }
-        public DbSet<Users> Users { get; set; }
+        public virtual DbSet<Novels> Novels { get; set; }
+        public virtual DbSet<Chapters> Chapters { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<NovelGenres> NovelGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -26,6 +27,7 @@
             modelBuilder.Entity<Novels>().ToTable(nameof(Novels));
             modelBuilder.Entity<Chapters>().ToTable(nameof(Chapters));
             modelBuilder.Entity<Users>().ToTable(nameof(Users));
+            modelBuilder.Entity<NovelGenres>().ToTable(nameof(NovelGenres));
         }
     }
 
