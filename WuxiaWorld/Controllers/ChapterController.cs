@@ -46,9 +46,9 @@
         public async Task<IActionResult> Publish(int novelId, int chapterId) {
 
             try {
-                var result = await _chapterService.Publish(novelId, chapterId).ConfigureAwait(false);
-
-                return Ok(result);
+                return Ok(await _chapterService
+                    .Publish(novelId, chapterId)
+                    .ConfigureAwait(false));
             }
             catch (FailedToPublishChapterException exception) {
                 return BadRequest(exception.Message);

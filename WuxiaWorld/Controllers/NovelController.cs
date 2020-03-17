@@ -30,7 +30,7 @@
             try {
                 return Ok(await _novelService.GetAll());
             }
-            catch (NoRecordFoundException exception) {
+            catch (NoRecordFoundException) {
                 return NoContent();
             }
         }

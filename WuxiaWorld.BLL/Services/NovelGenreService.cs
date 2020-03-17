@@ -27,33 +27,18 @@
 
         public async Task<bool> Assign(int novelId, List<int> genreIds) {
 
-            try {
-                var novel = await _novelRepository.GetById(novelId).ConfigureAwait(false);
+            // INFO: This will throw an exception error if no novel were found by id
+            await _novelRepository.GetById(novelId).ConfigureAwait(false);
 
-                if (novel != null) {
+            var genres = await _genreRepository.GetById(genreIds).ConfigureAwait(false);
 
-                    var genres = await _genreRepository.GetById(genreIds).ConfigureAwait(false);
+            // INFO: If not on equal count, meaning one or more genre id is not on database or no longer exists
+            if (genres.Count == genreIds.Count) {
 
-                    if (genres.Count == genreIds.Count) {
-
-                        return await _novelGenreRepository.Assign(novelId, genreIds).ConfigureAwait(false);
-                    }
-
-                    throw new OneOrMoreGenreNotFoundException("One or more genre not found");
-                }
-            }
-            catch (Exception exception) {
-                var innerExceptionMessage = exception.InnerException?.Message;
-
-                if (!string.IsNullOrEmpty(innerExceptionMessage)) {
-
-                    if (innerExceptionMessage.Contains("duplicate key value")) {
-                        throw new RecordAlreadyExistsException("Genre already exists");
-                    }
-                }
+                return await _novelGenreRepository.Assign(novelId, genreIds).ConfigureAwait(false);
             }
 
-            return false;
+            throw new OneOrMoreGenreNotFoundException("One or more genre not found");
         }
     }
 

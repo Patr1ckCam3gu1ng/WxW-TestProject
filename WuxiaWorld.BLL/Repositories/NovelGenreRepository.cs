@@ -28,9 +28,39 @@
 
         public async Task<bool> Assign(int novelId, List<int> genreIds) {
 
-            // INFO: Delete first the existing records
-
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            // INFO: Delete first the existing records
+            await DeleteExistingNovelGenre(novelId, ct);
+
+            // INFO: Then lets re insert the new ones
+            await AssignNewNovelGenre(novelId, genreIds, ct);
+
+            var isSuccess = await _dbContext
+                .SaveChangesAsync(ct.Token)
+                .ConfigureAwait(false);
+
+            return isSuccess == 1;
+        }
+
+        #region Private Methods
+
+        private async Task AssignNewNovelGenre(int novelId, IEnumerable<int> genreIds, CancellationTokenSource ct) {
+
+            foreach (var genreId in genreIds) {
+
+                await _dbContext.NovelGenres
+                    .AddAsync(
+                        new NovelGenres {
+                            GenreId = genreId,
+                            NovelId = novelId
+                        },
+                        ct.Token)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        private async Task DeleteExistingNovelGenre(int novelId, CancellationTokenSource ct) {
 
             var novels = await _dbContext.NovelGenres
                 .Where(c => c.NovelId == novelId)
@@ -42,26 +72,10 @@
                     _dbContext.RemoveRange(novels);
                 }
             }
-
-            // INFO: Then lets re insert the new ones
-
-            foreach (var genreId in genreIds) {
-
-                await _dbContext.NovelGenres
-                    .AddAsync(
-                        new NovelGenres {
-                            GenreId = genreId,
-                            NovelId = novelId
-                        }, ct.Token)
-                    .ConfigureAwait(false);
-            }
-
-            var result = await _dbContext
-                .SaveChangesAsync(ct.Token)
-                .ConfigureAwait(false);
-
-            return result == 1;
         }
+
+        #endregion
+
     }
 
 }

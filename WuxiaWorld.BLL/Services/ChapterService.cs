@@ -45,7 +45,6 @@
             var result = await _chapterRepository.Publish(novelId, chapterId).ConfigureAwait(false);
 
             if (result == null) {
-
                 throw new FailedToPublishChapterException("Failed publishing this novel's chapter");
             }
 

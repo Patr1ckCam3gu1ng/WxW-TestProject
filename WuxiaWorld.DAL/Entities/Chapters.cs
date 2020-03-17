@@ -25,7 +25,7 @@
 
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime ChapterPublishDate { get; set; }
+        public DateTime? ChapterPublishDate { get; set; }
 
         public int NovelId { get; set; }
         [ForeignKey("NovelId")]

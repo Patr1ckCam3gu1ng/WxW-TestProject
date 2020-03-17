@@ -28,14 +28,18 @@
         [Route("{novelId}/genre")]
         public async Task<IActionResult> Publish(int novelId, [FromBody] NovelGenreModel input) {
 
-            try
-            {
-                await _novelGenreService.Assign(novelId, input.GenreIds).ConfigureAwait(false);
+            try {
+                await _novelGenreService
+                    .Assign(novelId, input.GenreIds)
+                    .ConfigureAwait(false);
 
                 return Ok();
             }
-            catch (NoRecordFoundException exception) {
+            catch (NoRecordFoundException) {
                 return NoContent();
+            }
+            catch (NovelNotFoundException exception) {
+                return BadRequest(exception.Message);
             }
         }
     }

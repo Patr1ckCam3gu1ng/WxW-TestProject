@@ -40,4 +40,9 @@
         }
     }
 
+    public class NovelNotFoundException : ServiceException {
+        public NovelNotFoundException(string message) : base(message) {
+        }
+    }
+
 }
