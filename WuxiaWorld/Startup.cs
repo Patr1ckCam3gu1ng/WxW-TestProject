@@ -42,7 +42,16 @@ namespace WuxiaWorld {
             services.AddHttpContextAccessor();
 
             services.AddSpaStaticFiles(configuration => {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp";
+            });
+
+            services.AddCors(options => {
+                options.AddPolicy("AllowAllHeaders",
+                    builder => {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
             });
         }
 
@@ -51,6 +60,8 @@ namespace WuxiaWorld {
             dataContext.Database.Migrate();
 
             if (env.IsDevelopment()) {
+
+                app.UseCors("AllowAllHeaders");
 
                 app.UseDeveloperExceptionPage();
             }
@@ -64,13 +75,13 @@ namespace WuxiaWorld {
             app.RegisterSslRequired();
             app.RegisterMvcRouting();
 
-            // app.UseSpa(spa => {
-            //     spa.Options.SourcePath = "ClientApp";
-            //
-            //     if (env.IsDevelopment()) {
-            //         spa.UseReactDevelopmentServer("start");
-            //     }
-            // });
+            app.UseSpa(spa => {
+                spa.Options.SourcePath = "ClientApp";
+            
+                if (env.IsDevelopment()) {
+                    spa.UseReactDevelopmentServer("start");
+                }
+            });
         }
     }
 

@@ -28456,6 +28456,8 @@ function (_super) {
     return _this;
   }
 
+  Counter.prototype.componentDidMount = function () {};
+
   Counter.prototype.render = function () {
     return React.createElement("div", null, React.createElement(Count_1.default, {
       count: this.state.count
@@ -28528,7 +28530,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58839" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62016" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

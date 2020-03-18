@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Test project for Wuxiaworld job application",
   "scripts": {
-    "dev": "parcel src/index.html"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "keywords": [],
   "author": "Patrick C.",
@@ -23,6 +24,20 @@
   "dependencies": {
     "eslint-plugin-react": "^7.19.0",
     "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.0",
+    "react-scripts": "3.4.0",
+    "axios": "latest"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

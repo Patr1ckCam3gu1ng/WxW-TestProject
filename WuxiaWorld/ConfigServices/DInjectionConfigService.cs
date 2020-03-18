@@ -43,6 +43,8 @@
 
             services.AddScoped<ICacheRepository, CacheRepository>();
 
+            services.AddScoped<ICommandService, CommandService>();
+
             return services;
         }
     }

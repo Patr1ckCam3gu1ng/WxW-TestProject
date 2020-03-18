@@ -19,7 +19,7 @@
         private static void SerializerSettings(MvcNewtonsoftJsonOptions options) {
 
             options.SerializerSettings.Formatting = Formatting.Indented;
-            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             //This will stop the Circular Reference.
             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
