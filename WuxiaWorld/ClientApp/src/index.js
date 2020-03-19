@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CommandComponent from './app/command/components/command.component';
+import CommandContainer from './app/command/container/command.container';
 
-ReactDOM.render(<CommandComponent />, document.getElementById('main'));
+ReactDOM.render(<CommandContainer />, document.getElementById('main'));

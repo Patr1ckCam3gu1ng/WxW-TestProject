@@ -1,6 +1,7 @@
 import { Genres } from './genres.interface';
 
-export interface State {
+export interface CommandState {
     genres: Genres[];
     inputValue: string;
+    message: string;
 }

@@ -15,8 +15,7 @@
 
     [Route("api/genres")]
     [TypeFilter(typeof(DbContextActionFilter))]
-    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GenreController : Controller {
 
         private readonly IGenreService _genreService;
