@@ -114,7 +114,8 @@
                 .SaveChangesAsync(ct.Token)
                 .ConfigureAwait(false);
 
-            await _cache.RemoveAsync(_pathValue).ConfigureAwait(false);
+            await _cache.CreateAsync(_pathValue, newGenre, new CancellationChangeToken(ct.Token))
+                .ConfigureAwait(false);
 
             return result == 1 ? newGenre : null;
         }

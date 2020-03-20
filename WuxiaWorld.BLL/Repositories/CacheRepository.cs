@@ -29,7 +29,6 @@
                 return await _cache.GetOrCreateAsync(keyValue,
                     cache => {
                         cache.SlidingExpiration = TimeSpan.FromMinutes(120);
-                        cache.AddExpirationToken(cancellationToken);
 
                         return Task.FromResult(data);
                     });

@@ -52,7 +52,9 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-            await _cache.RemoveAsync(_pathValue).ConfigureAwait(false);
+            await _cache.CreateAsync($"{_pathValue}/{newNovel.NovelId}",
+                newNovel,
+                new CancellationChangeToken(ct.Token));
 
             return result == 1 ? newNovel : null;
         }
