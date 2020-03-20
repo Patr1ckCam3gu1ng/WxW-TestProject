@@ -4,18 +4,9 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class Novels {
+    using Models;
 
-        [Key]
-        public int NovelId { get; set; }
-
-        [Required]
-        [StringLength(250)]
-        public string Name { get; set; }
-
-        [Required]
-        [StringLength(1500)]
-        public string Synopsis { get; set; }
+    public class Novels : IdNameModel {
 
         [Required]
         [DataType(DataType.DateTime)]

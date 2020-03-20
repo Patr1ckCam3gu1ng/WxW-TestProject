@@ -72,7 +72,7 @@
 
             var genre = await (
                     from dbGenre in _dbContext.Genres
-                    where dbGenre.GenreName.ToLower().Equals(genreName.ToLower())
+                    where dbGenre.Name.ToLower().Equals(genreName.ToLower())
                     select dbGenre).FirstOrDefaultAsync(ct.Token)
                 .ConfigureAwait(false);
 
@@ -93,7 +93,7 @@
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
             var genres = await _dbContext.Genres
-                .Where(c => genreIds.Any(f => f == c.GenreId))
+                .Where(c => genreIds.Any(f => f == c.Id))
                 .ToListAsync(ct.Token)
                 .ConfigureAwait(false);
 
@@ -114,8 +114,11 @@
                 .SaveChangesAsync(ct.Token)
                 .ConfigureAwait(false);
 
-            await _cache.CreateAsync(_pathValue, newGenre, new CancellationChangeToken(ct.Token))
-                .ConfigureAwait(false);
+            if (result == 1) {
+
+                await _cache.CreateAsync($"{_pathValue}/{newGenre.Id}", newGenre, new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+            }
 
             return result == 1 ? newGenre : null;
         }

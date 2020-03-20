@@ -8,19 +8,18 @@
     public class NovelGenres {
 
         [Key]
-        [JsonIgnore]
         public int Id { get; set; }
 
         [Required]
         public int GenreId { get; set; }
 
-        [ForeignKey("GenreId")]
+        [ForeignKey(nameof(GenreId))]
         public Genres Genres { get; set; }
 
         [Required]
         public int NovelId { get; set; }
 
-        [ForeignKey("NovelId")]
+        [ForeignKey(nameof(NovelId))]
         public Novels Novels { get; set; }
     }
 

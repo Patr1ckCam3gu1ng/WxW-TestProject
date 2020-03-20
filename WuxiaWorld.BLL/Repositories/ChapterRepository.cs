@@ -50,8 +50,12 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-            await _cache.CreateAsync(_pathValue, novelChapter, new CancellationChangeToken(ct.Token))
-                .ConfigureAwait(false);
+            if (result == 1) {
+                await _cache.CreateAsync($"{_pathValue}/{novelChapter.Id}",
+                        novelChapter,
+                        new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+            }
 
             return result == 1 ? novelChapter : null;
         }

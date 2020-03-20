@@ -21,15 +21,10 @@ namespace WuxiaWorld.DAL.Migrations
 
             modelBuilder.Entity("WuxiaWorld.DAL.Entities.Chapters", b =>
                 {
-                    b.Property<int>("ChapterId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ChapterName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
 
                     b.Property<int>("ChapterNumber")
                         .HasColumnType("int");
@@ -42,13 +37,15 @@ namespace WuxiaWorld.DAL.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasMaxLength(2147483647);
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(500)")
+                        .HasMaxLength(500);
+
                     b.Property<int>("NovelId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TimeRead")
-                        .HasColumnType("int");
-
-                    b.HasKey("ChapterId");
+                    b.HasKey("Id");
 
                     b.HasIndex("NovelId");
 
@@ -57,19 +54,19 @@ namespace WuxiaWorld.DAL.Migrations
 
             modelBuilder.Entity("WuxiaWorld.DAL.Entities.Genres", b =>
                 {
-                    b.Property<int>("GenreId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("GenreName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(500)")
+                        .HasMaxLength(500);
 
-                    b.HasKey("GenreId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GenreName")
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Genres");
@@ -99,25 +96,20 @@ namespace WuxiaWorld.DAL.Migrations
 
             modelBuilder.Entity("WuxiaWorld.DAL.Entities.Novels", b =>
                 {
-                    b.Property<int>("NovelId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("Synopsis")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1500)")
-                        .HasMaxLength(1500);
+                        .HasColumnType("nvarchar(500)")
+                        .HasMaxLength(500);
 
                     b.Property<DateTime>("TimeCreated")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("NovelId");
+                    b.HasKey("Id");
 
                     b.ToTable("Novels");
                 });
@@ -148,7 +140,7 @@ namespace WuxiaWorld.DAL.Migrations
             modelBuilder.Entity("WuxiaWorld.DAL.Entities.NovelGenres", b =>
                 {
                     b.HasOne("WuxiaWorld.DAL.Entities.Genres", "Genres")
-                        .WithMany()
+                        .WithMany("NovelGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

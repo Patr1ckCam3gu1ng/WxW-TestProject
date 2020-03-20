@@ -52,9 +52,11 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-            await _cache.CreateAsync($"{_pathValue}/{newNovel.NovelId}",
-                newNovel,
-                new CancellationChangeToken(ct.Token));
+            if (result == 1) {
+                await _cache.CreateAsync($"{_pathValue}/{newNovel.Id}",
+                    newNovel,
+                    new CancellationChangeToken(ct.Token));
+            }
 
             return result == 1 ? newNovel : null;
         }
@@ -75,23 +77,22 @@
                     .Include(c => c.Chapters)
                     .Include(c => c.NovelGenres).ThenInclude(c => c.Genres)
                 select new Novels {
-                    NovelId = novel.NovelId,
+                    Id = novel.Id,
                     Name = novel.Name,
-                    Synopsis = novel.Synopsis,
                     TimeCreated = novel.TimeCreated,
                     NovelGenres = novel.NovelGenres,
                     Chapters = (ICollection<Chapters>) novel.Chapters.Where(c => c.ChapterPublishDate != null)
                 };
-
+            
             var novels = await query.ToListAsync(ct.Token).ConfigureAwait(false);
-
+            
             if (novels != null) {
-
+            
                 var novelResult = _mapper.Map<List<NovelResult>>(novels);
-
+            
                 await _cache.CreateAsync(_pathValue, novelResult, new CancellationChangeToken(ct.Token))
                     .ConfigureAwait(false);
-
+            
                 return novelResult;
             }
 
@@ -110,9 +111,9 @@
             }
 
             var novel = await _dbContext.Novels
-                .FirstOrDefaultAsync(c => c.NovelId == novelId, ct.Token)
+                .FirstOrDefaultAsync(c => c.Id == novelId, ct.Token)
                 .ConfigureAwait(false);
-
+            
             await _cache.CreateAsync(_pathValue, novel, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
 
             return novel;

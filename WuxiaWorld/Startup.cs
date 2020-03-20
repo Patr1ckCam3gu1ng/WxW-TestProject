@@ -1,11 +1,8 @@
 namespace WuxiaWorld {
 
-    using System.Linq;
-
     using ConfigServices;
 
     using DAL.Entities;
-    using DAL.Models;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -77,7 +74,7 @@ namespace WuxiaWorld {
 
             app.UseSpa(spa => {
                 spa.Options.SourcePath = "ClientApp";
-            
+
                 if (env.IsDevelopment()) {
                     spa.UseReactDevelopmentServer("start");
                 }

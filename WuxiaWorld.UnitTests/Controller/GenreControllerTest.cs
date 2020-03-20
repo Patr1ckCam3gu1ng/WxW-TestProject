@@ -60,8 +60,8 @@
                 var result = controllerGet.GetResult();
 
                 var viewResult = Assert.IsType<OkObjectResult>(result);
-                var employees = Assert.IsType<List<Genres>>(viewResult.Value);
-                Assert.Equal(2, employees.Count);
+                var genre = Assert.IsType<List<Genres>>(viewResult.Value);
+                Assert.Equal(2, genre.Count);
             }
         }
 
@@ -91,8 +91,8 @@
                 var result = controllerGetByName.GetResult();
 
                 var viewResult = Assert.IsType<OkObjectResult>(result);
-                var employees = Assert.IsType<Genres>(viewResult.Value);
-                Assert.Equal(0, employees.GenreId);
+                var genre = Assert.IsType<Genres>(viewResult.Value);
+                Assert.Equal(0, genre.Id);
             }
         }
     }

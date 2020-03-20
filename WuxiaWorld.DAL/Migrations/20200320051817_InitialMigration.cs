@@ -11,28 +11,27 @@ namespace WuxiaWorld.DAL.Migrations
                 name: "Genres",
                 columns: table => new
                 {
-                    GenreId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GenreName = table.Column<string>(maxLength: 50, nullable: false)
+                    Name = table.Column<string>(maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genres", x => x.GenreId);
+                    table.PrimaryKey("PK_Genres", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Novels",
                 columns: table => new
                 {
-                    NovelId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(maxLength: 250, nullable: false),
-                    Synopsis = table.Column<string>(maxLength: 1500, nullable: false),
+                    Name = table.Column<string>(maxLength: 500, nullable: false),
                     TimeCreated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Novels", x => x.NovelId);
+                    table.PrimaryKey("PK_Novels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,23 +50,22 @@ namespace WuxiaWorld.DAL.Migrations
                 name: "Chapters",
                 columns: table => new
                 {
-                    ChapterId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(maxLength: 500, nullable: false),
                     ChapterNumber = table.Column<int>(nullable: false),
-                    ChapterName = table.Column<string>(maxLength: 250, nullable: false),
                     Content = table.Column<string>(maxLength: 2147483647, nullable: false),
-                    TimeRead = table.Column<int>(nullable: false),
                     ChapterPublishDate = table.Column<DateTime>(nullable: true),
                     NovelId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chapters", x => x.ChapterId);
+                    table.PrimaryKey("PK_Chapters", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Chapters_Novels_NovelId",
                         column: x => x.NovelId,
                         principalTable: "Novels",
-                        principalColumn: "NovelId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -87,13 +85,13 @@ namespace WuxiaWorld.DAL.Migrations
                         name: "FK_NovelGenres_Genres_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genres",
-                        principalColumn: "GenreId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_NovelGenres_Novels_NovelId",
                         column: x => x.NovelId,
                         principalTable: "Novels",
-                        principalColumn: "NovelId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -103,9 +101,9 @@ namespace WuxiaWorld.DAL.Migrations
                 column: "NovelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Genres_GenreName",
+                name: "IX_Genres_Name",
                 table: "Genres",
-                column: "GenreName",
+                column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
