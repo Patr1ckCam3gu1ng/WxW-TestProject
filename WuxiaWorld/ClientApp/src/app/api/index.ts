@@ -1,15 +1,28 @@
 import axios from 'axios';
 import common from '../common';
 import { UserAccount } from '../command/models/userAccount.interface';
-import { Genres } from '../command/models/genres.interface';
+import { Genre } from '../command/models/genre.interface';
+import { Novel } from '../command/models/novel.interface';
 
 const apiRootUrl = common.apiUrl();
 
 export default {
-    get(): { commands: (authenticationHeader: string, commandType: string) => Promise<Genres[]> } {
+    get(): {
+        genre: (authenticationHeader: string, commandType: string) => Promise<Genre[]>;
+        novel: (authenticationHeader: string, commandType: string) => Promise<Novel[]>;
+    } {
         return {
-            commands: (authenticationHeader: string, commandType: string): Promise<Genres[]> => {
-                return (async function(): Promise<Genres[]> {
+            genre: (authenticationHeader: string, commandType: string): Promise<Genre[]> => {
+                return (async function(): Promise<Genre[]> {
+                    return (
+                        await axios.get(`${apiRootUrl}/${commandType}`, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                    ).data;
+                })().then(data => data);
+            },
+            novel: (authenticationHeader: string, commandType: string): Promise<Novel[]> => {
+                return (async function(): Promise<Novel[]> {
                     return (
                         await axios.get(`${apiRootUrl}/${commandType}`, {
                             headers: { Authorization: authenticationHeader },
@@ -23,7 +36,7 @@ export default {
         return {
             login: (userAccount: UserAccount): Promise<string> => {
                 return (async function(): Promise<string> {
-                    return (await axios.post(`${apiRootUrl}/login`, userAccount).catch(data => data.response)).data;
+                    return (await axios.post(`${apiRootUrl}/login`, userAccount)).data;
                 })().then(data => data);
             },
         };

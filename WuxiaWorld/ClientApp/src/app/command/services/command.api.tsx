@@ -1,6 +1,7 @@
 import apis from '../../api';
-import { Genres } from '../models/genres.interface';
+import { Genre } from '../models/genre.interface';
 import { UserAccount } from '../models/userAccount.interface';
+import { Novel } from '../models/novel.interface';
 
 function throwError({ error }: { error: any }): object {
     const { status, data } = error.response;
@@ -12,11 +13,22 @@ function throwError({ error }: { error: any }): object {
 
 export default {
     get: {
-        genres: (commandType: string, authenticationHeader: string): Promise<Genres[] | any> => {
+        genres: (commandType: string, authenticationHeader: string): Promise<Genre[] | any> => {
             return apis
                 .get()
-                .commands(authenticationHeader, commandType)
-                .then((value: Genres[]) => {
+                .genre(authenticationHeader, commandType)
+                .then((value: Genre[]) => {
+                    return value;
+                })
+                .catch(function(error) {
+                    throwError({ error: error });
+                });
+        },
+        novels: (commandType: string, authenticationHeader: string): Promise<Novel[] | any> => {
+            return apis
+                .get()
+                .novel(authenticationHeader, commandType)
+                .then((value: Novel[]) => {
                     return value;
                 })
                 .catch(function(error) {
@@ -24,7 +36,7 @@ export default {
                 });
         },
     },
-    login: (userAccount: UserAccount): Promise<string | void> => {
+    login: (userAccount: UserAccount): Promise<string | any> => {
         return apis
             .auth()
             .login(userAccount)
@@ -32,7 +44,7 @@ export default {
                 return value;
             })
             .catch(function(error) {
-                console.log(error.response.data); // this is the part you need that catches 400 request
+                throwError({ error: error });
             });
     },
 };

@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { Genres } from '../models/genres.interface';
+import { Genre } from '../models/genre.interface';
 
 interface Props {
-    genres: Genres[];
+    genres: Genre[];
 }
 
 export default class ComponentGender extends React.Component<Props> {
     render = () => (
         <div>
-            {this.props.genres?.map((value: Genres, key) => {
+            {this.props.genres?.map((value: Genre, key) => {
                 return (
-                    <h2 key={key}>
+                    <h4 key={key}>
                         {(key + 1).toString()}.) {value.name}
-                    </h2>
+                    </h4>
                 );
             })}
         </div>

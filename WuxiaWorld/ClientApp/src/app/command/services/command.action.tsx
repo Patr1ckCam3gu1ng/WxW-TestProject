@@ -1,8 +1,10 @@
 import api from './command.api';
-import { Genres } from '../models/genres.interface';
+import { Genre } from '../models/genre.interface';
 import { UserAccount } from '../models/userAccount.interface';
 import { Actions } from '../models/actions.interface';
 import { ApiError } from '../models/apiError.interface';
+import error from '../services/command.error';
+import { Novel } from '../models/novel.interface';
 
 const actions = {
     getFirstCommand: (value: string) => {
@@ -32,7 +34,7 @@ const actions = {
     authenticationHeader: (): string | any => {
         return `Bearer ${localStorage.getItem('jwtToken')}`;
     },
-    clearInput: (actionSetState: Actions) => {
+    clearInput: (actionSetState: Actions): void => {
         actionSetState.setInputValue('');
     },
 };
@@ -49,23 +51,37 @@ export default {
             if (commandType === 'genres') {
                 api.get
                     .genres(commandType, actions.authenticationHeader())
-                    .then((genres: Genres[]) => {
+                    .then((genres: Genre[]) => {
                         actionSetState.setStateListGenres(genres);
                     })
-                    .catch((error: ApiError) => {
-                        if (error.code === 401) {
-                            actionSetState.setMessage('Invalid username or password');
-                        }
+                    .catch((apiError: ApiError) => {
+                        error.notAuthenticated(apiError.code, actionSetState);
                     });
-                clearInput();
-                return;
             }
+            if (commandType === 'novels') {
+                api.get
+                    .novels(commandType, actions.authenticationHeader())
+                    .then((novels: Novel[]) => {
+                        actionSetState.setStateListNovels(novels);
+                    })
+                    .catch((apiError: ApiError) => {
+                        error.notAuthenticated(apiError.code, actionSetState);
+                    });
+            }
+
+            clearInput();
+            return;
         }
         if (firstCommand === 'login') {
             const userAccount = actions.getSecondThirdCommand(value);
-            api.login(userAccount).then((newToken: string | any) => {
-                localStorage.setItem('jwtToken', newToken);
-            });
+            api.login(userAccount)
+                .then((newToken: string | any) => {
+                    localStorage.setItem('jwtToken', newToken);
+                    actionSetState.setMessage(`Login successful. Welcome ${userAccount.username}`)
+                })
+                .catch((apiError: ApiError) => {
+                    error.invalidCredential(apiError.code, actionSetState);
+                });
             clearInput();
             return;
         }
@@ -75,7 +91,7 @@ export default {
             return;
         }
         if (firstCommand === 'logout') {
-            actionSetState.setStateEmpty();
+            actionSetState.setStateEmpty().setMessage('Logout successfully');
             localStorage.clear();
             clearInput();
             return;
