@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.BLL.Repositories {
 
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -50,21 +51,52 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-            if (result > 0) {
+            if (result == 1) {
+
                 await _cache.CreateAsync($"{_pathValue}/{novelChapter.Id}",
                         novelChapter,
                         new CancellationChangeToken(ct.Token))
                     .ConfigureAwait(false);
+
+                await _cache.CreateAsync($"{_pathValue}",
+                        await ConstructChapterList(),
+                        new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+
+                return novelChapter;
             }
 
-            return result == 1 ? novelChapter : null;
+            throw new FailedCreatingNewException();
+
+            async Task<List<Chapters>> ConstructChapterList() {
+
+                var cacheNovelChapters = _cache.GetCache(_pathValue);
+
+                if (cacheNovelChapters != null) {
+
+                    if (cacheNovelChapters is List<Chapters> cacheNovelChapter) {
+
+                        await _cache.RemoveAsync(_pathValue);
+
+                        cacheNovelChapter.Add(novelChapter);
+
+                        return cacheNovelChapter;
+                    }
+                }
+
+                return new List<Chapters>() {
+                    novelChapter
+                };
+            }
         }
 
-        public async Task<Chapters> GetByChapterNumber(int novelId, int chapterName) {
+        public async Task<Chapters> GetByChapterNumber(int novelId, int chapterNumber) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-            var cacheResult = _cache.GetCache(_pathValue);
+            var apiEndpoint = $"{_pathValue}/{chapterNumber}";
+
+            var cacheResult = _cache.GetCache(apiEndpoint);
 
             if (cacheResult != null) {
 
@@ -73,10 +105,14 @@
 
             var result = await (
                 from chapter in _dbContext.Chapters
-                where chapter.ChapterNumber == chapterName && chapter.NovelId == novelId
+                where chapter.ChapterNumber == chapterNumber && chapter.NovelId == novelId
                 select chapter).FirstOrDefaultAsync(ct.Token).ConfigureAwait(false);
 
-            await _cache.CreateAsync(_pathValue, result, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+            if (result != null) {
+
+                await _cache.CreateAsync(apiEndpoint, result, new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+            }
 
             return result;
         }

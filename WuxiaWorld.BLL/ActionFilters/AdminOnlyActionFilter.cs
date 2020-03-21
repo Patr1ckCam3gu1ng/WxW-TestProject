@@ -11,6 +11,9 @@
 
             try {
 
+                // INFO:  The admin user is the only one who can write to the repo. All other
+                // INFO:    users can only list the contents.
+
                 var userRole = context.HttpContext.User.FindFirst(ClaimTypes.Role).Value.ToLower();
 
                 if (userRole.ToLowerInvariant() != "admin") {

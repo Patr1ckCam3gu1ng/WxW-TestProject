@@ -40,18 +40,13 @@
 
                     var novelChapter = await _chapterRepository.Create(novelId, input);
 
-                    if (novelChapter == null)
-                    {
-                        throw new FailedCreatingNewException("Failed creating new novel chapter");
-                    }
-
                     return _mapper.Map<ChapterModel>(novelChapter);
                 }
 
                 throw new NoRecordFoundException("Novel not found");
             }
 
-            throw new NovelChapterNumberExistsException("Chapter number already exists in this novel");
+            throw new NovelChapterNumberExistsException();
         }
 
         public async Task<Chapters> Publish(int novelId, int chapterNumber) {

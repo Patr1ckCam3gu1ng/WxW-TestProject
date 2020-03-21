@@ -106,7 +106,7 @@
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-            var apiEndpoint = _pathValue.Replace("/genre", "");
+            var apiEndpoint = $"/api/novels/{novelId}";
 
             var cacheResult = _cache.GetCache(apiEndpoint);
 

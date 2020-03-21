@@ -11,7 +11,7 @@
     }
 
     public class FailedCreatingNewException : ServiceException {
-        public FailedCreatingNewException(string message) : base(message) {
+        public FailedCreatingNewException(string message = "Failed creating new chapter for this chapter") : base(message) {
         }
     }
 
@@ -21,7 +21,8 @@
     }
 
     public class NovelChapterNumberExistsException : ServiceException {
-        public NovelChapterNumberExistsException(string message) : base(message) {
+        public NovelChapterNumberExistsException(string message = "Chapter number already exists in this novel") :
+            base(message) {
         }
     }
 

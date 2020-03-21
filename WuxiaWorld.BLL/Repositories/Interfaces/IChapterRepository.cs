@@ -10,7 +10,7 @@
         Task<Chapters> Create(int novelId, ChapterModel input);
 
 
-        Task<Chapters> GetByChapterNumber(int novelId, int chapterName);
+        Task<Chapters> GetByChapterNumber(int novelId, int chapterNumber);
 
 
         Task<Chapters> Publish(int novelId, int chapterNumber);
