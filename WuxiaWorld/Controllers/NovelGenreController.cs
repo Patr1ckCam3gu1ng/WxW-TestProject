@@ -40,6 +40,9 @@
             catch (NoRecordFoundException exception) {
                 return BadRequest(exception.Message);
             }
+            catch (OneOrMoreGenreNotFoundException exception) {
+                return BadRequest(exception.Message);
+            }
             catch (NovelNotFoundException exception) {
                 return BadRequest(exception.Message);
             }

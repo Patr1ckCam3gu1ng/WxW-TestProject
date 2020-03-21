@@ -40,7 +40,7 @@
                 .SaveChangesAsync(ct.Token)
                 .ConfigureAwait(false);
 
-            return isSuccess == 1;
+            return isSuccess > 0;
         }
 
         #region Private Methods

@@ -39,20 +39,20 @@
             }
         }
 
-        [HttpGet]
-        [Route("{genreName}")]
-        public async Task<IActionResult> Get(string genreName) {
-
-            try {
-                return Ok(await _genreService.GetByName(genreName));
-            }
-            catch (NoRecordFoundException) {
-                return NoContent();
-            }
-            catch {
-                return BadRequest(ExceptionError.Message);
-            }
-        }
+        // [HttpGet]
+        // [Route("{genreName}")]
+        // public async Task<IActionResult> Get(string genreName) {
+        //
+        //     try {
+        //         return Ok(await _genreService.GetByName(genreName));
+        //     }
+        //     catch (NoRecordFoundException) {
+        //         return NoContent();
+        //     }
+        //     catch {
+        //         return BadRequest(ExceptionError.Message);
+        //     }
+        // }
 
         [HttpPost]
         [TypeFilter(typeof(AdminOnlyActionFilter))]

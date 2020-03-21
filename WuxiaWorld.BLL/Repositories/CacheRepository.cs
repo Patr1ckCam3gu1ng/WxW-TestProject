@@ -1,7 +1,11 @@
 ﻿namespace WuxiaWorld.BLL.Repositories {
 
     using System;
+    using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
+
+    using AutoMapper;
 
     using Interfaces;
 
@@ -11,10 +15,12 @@
     public class CacheRepository : ICacheRepository {
 
         private readonly IMemoryCache _cache;
+        private readonly IMapper _mapper;
 
-        public CacheRepository(IMemoryCache cache) {
+        public CacheRepository(IMemoryCache cache, IMapper mapper) {
 
-            _cache = cache;
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public object GetCache(string keyValue) {
@@ -44,6 +50,26 @@
             _cache.Remove($"{keyValue}/");
 
             return Task.CompletedTask;
+        }
+
+        public async Task UpsertAsync(string apiEndpointKeyValue, int newId, object newRecord, CancellationToken ctToken) {
+
+            await CreateAsync($"{apiEndpointKeyValue}/{newId}", newRecord, new CancellationChangeToken(ctToken))
+                .ConfigureAwait(false);
+
+            var objectList = new List<object>();
+
+            if (GetCache(apiEndpointKeyValue) is List<object> cacheResult) {
+
+                objectList.AddRange(cacheResult);
+            }
+
+            objectList.Add(newRecord);
+
+            await RemoveAsync(apiEndpointKeyValue);
+
+            await CreateAsync(apiEndpointKeyValue, objectList, new CancellationChangeToken(ctToken))
+                .ConfigureAwait(false);
         }
     }
 

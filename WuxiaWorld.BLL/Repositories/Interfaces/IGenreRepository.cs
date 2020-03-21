@@ -8,16 +8,16 @@
 
     public interface IGenreRepository {
 
-        Task<List<Genres>> GetAllAsync();
+        Task<List<IdNameModel>> GetAllAsync();
 
 
-        Task<Genres> GetByName(string genreName);
+        // Task<Genres> GetByName(string genreName);
 
 
         Task<Genres> Create(GenreModel genre);
 
 
-        Task<List<Genres>> GetById(List<int> genreIds);
+        Task<List<Genres>> GetByIds(List<int> inputGenreIds);
     }
 
 }

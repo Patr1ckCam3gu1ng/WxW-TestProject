@@ -11,6 +11,8 @@
     using DAL.Entities;
     using DAL.Models;
 
+    using Exceptions;
+
     using Interfaces;
 
     using Microsoft.AspNetCore.Http;
@@ -38,13 +40,13 @@
             _cancelTokenFromSeconds = cancelToken.Value.FromSeconds;
         }
 
-        public async Task<List<Genres>> GetAllAsync() {
+        public async Task<List<IdNameModel>> GetAllAsync() {
 
             var cacheResult = _cache.GetCache(_pathValue);
 
             if (cacheResult != null) {
 
-                return cacheResult as List<Genres>;
+                return _mapper.Map<List<IdNameModel>>(cacheResult);
             }
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
@@ -54,52 +56,107 @@
                     select genre).ToListAsync(ct.Token)
                 .ConfigureAwait(false);
 
-            await _cache.CreateAsync(_pathValue, genres, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+            var mappedGenre = _mapper.Map<List<IdNameModel>>(genres);
 
-            return genres;
+            await _cache.CreateAsync(_pathValue, mappedGenre, new CancellationChangeToken(ct.Token))
+                .ConfigureAwait(false);
+
+            return mappedGenre;
         }
 
-        public async Task<Genres> GetByName(string genreName) {
+        // public async Task<Genres> GetByName(string genreName) {
+        //
+        //     var cacheResult = _cache.GetCache(_pathValue);
+        //
+        //     if (cacheResult != null) {
+        //
+        //         return cacheResult as Genres;
+        //     }
+        //
+        //     var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+        //
+        //     var genre = await (
+        //             from dbGenre in _dbContext.Genres
+        //             where dbGenre.Name.ToLower().Equals(genreName.ToLower())
+        //             select dbGenre).FirstOrDefaultAsync(ct.Token)
+        //         .ConfigureAwait(false);
+        //
+        //     await _cache.CreateAsync(_pathValue, genre, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+        //
+        //     return genre;
+        // }
 
-            var cacheResult = _cache.GetCache(_pathValue);
-
-            if (cacheResult != null) {
-
-                return cacheResult as Genres;
-            }
+        public async Task<List<Genres>> GetByIds(List<int> inputGenreIds) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-            var genre = await (
-                    from dbGenre in _dbContext.Genres
-                    where dbGenre.Name.ToLower().Equals(genreName.ToLower())
-                    select dbGenre).FirstOrDefaultAsync(ct.Token)
-                .ConfigureAwait(false);
+            var cacheGenreList = GetCacheGenre();
 
-            await _cache.CreateAsync(_pathValue, genre, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+            // INFO: Is all inputGenreIds are fetched from the cache
+            // INFO:    If not, then proceed and fetch 'only' those that are not yet cached.
+            if (cacheGenreList.Any() && cacheGenreList.Count == inputGenreIds.Count) {
 
-            return genre;
-        }
-
-        public async Task<List<Genres>> GetById(List<int> genreIds) {
-
-            var cacheResult = _cache.GetCache(_pathValue);
-
-            if (cacheResult != null) {
-
-                return cacheResult as List<Genres>;
+                return cacheGenreList;
             }
 
-            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+            var genreFromDb = await GetGenreFromDb();
 
-            var genres = await _dbContext.Genres
-                .Where(c => genreIds.Any(f => f == c.Id))
-                .ToListAsync(ct.Token)
-                .ConfigureAwait(false);
+            if (!cacheGenreList.Any()) {
+                return genreFromDb;
+            }
 
-            await _cache.CreateAsync(_pathValue, genres, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+            cacheGenreList.AddRange(genreFromDb);
 
-            return genres;
+            return cacheGenreList;
+
+            #region Private Methods
+
+            List<Genres> GetCacheGenre() {
+
+                return (from genreId in inputGenreIds
+                        select _cache.GetCache(GetApiEndpoint(genreId))
+                        into cacheResult
+                        where cacheResult != null
+                        select cacheResult as Genres).ToList();
+            }
+
+            List<int> GetNonCacheIds() {
+
+                return inputGenreIds.Where(genreId => cacheGenreList.All(c => c.Id != genreId)).ToList();
+            }
+
+            string GetApiEndpoint(int genreId) {
+
+                return $"/api/genres/{genreId}";
+            }
+
+            async Task<List<Genres>> GetGenreFromDb() {
+
+                // INFO: Get only the genre 'Ids' of those that are not present in the cache.
+                var nonCacheGenreList = GetNonCacheIds();
+
+                if (nonCacheGenreList.Any()) {
+
+                    var genres = await _dbContext.Genres
+                        .Where(c => nonCacheGenreList.Any(f => f == c.Id))
+                        .ToListAsync(ct.Token)
+                        .ConfigureAwait(false);
+
+                    foreach (var genre in genres) {
+
+                        await _cache.CreateAsync(GetApiEndpoint(genre.Id),
+                                genre,
+                                new CancellationChangeToken(ct.Token))
+                            .ConfigureAwait(false);
+                    }
+
+                    return genres;
+                }
+
+                throw new OneOrMoreGenreNotFoundException();
+            }
+
+            #endregion
         }
 
         public async Task<Genres> Create(GenreModel genre) {
@@ -116,8 +173,7 @@
 
             if (result == 1) {
 
-                await _cache.CreateAsync($"{_pathValue}/{newGenre.Id}", newGenre, new CancellationChangeToken(ct.Token))
-                    .ConfigureAwait(false);
+                await _cache.UpsertAsync(_pathValue, newGenre.Id, newGenre, ct.Token);
             }
 
             return result == 1 ? newGenre : null;

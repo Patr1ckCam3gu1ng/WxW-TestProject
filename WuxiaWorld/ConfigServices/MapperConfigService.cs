@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.ConfigServices {
 
     using System;
+    using System.Linq;
 
     using AutoMapper;
 
@@ -21,8 +22,13 @@
 
             CreateMap<Novels, NovelResult>()
                 .ForMember(c => c.Genres,
-                    f => f.MapFrom(c => c.NovelGenres));
+                    f => f.MapFrom(c => c.NovelGenres.ToList()))
+                .ForMember(c => c.Chapters,
+                    f => f.MapFrom(c => c.Chapters.ToList()));
+
             CreateMap<NovelGenres, NovelGenreResult>();
+
+            CreateMap<Genres, IdNameModel>();
         }
     }
 

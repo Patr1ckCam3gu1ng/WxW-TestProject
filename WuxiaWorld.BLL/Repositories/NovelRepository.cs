@@ -27,6 +27,7 @@
 
         private readonly WuxiaWorldDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _pathValue;
 
         public NovelRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken,
@@ -34,13 +35,14 @@
 
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _httpContextAccessor = httpContextAccessor;
             _pathValue = httpContextAccessor.HttpContext.Request.Path.Value ??
                          throw new ArgumentNullException(nameof(httpContextAccessor));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _cancelTokenFromSeconds = cancelToken.Value.FromSeconds;
         }
 
-        public async Task<Novels> Create(NovelModel input) {
+        public async Task<NovelResult> Create(NovelModel input) {
 
             var newNovel = _mapper.Map<Novels>(input);
 
@@ -52,13 +54,12 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-            if (result == 1) {
-                await _cache.CreateAsync($"{_pathValue}/{newNovel.Id}",
-                    newNovel,
-                    new CancellationChangeToken(ct.Token));
+            if (result > 0) {
+
+                await _cache.UpsertAsync(_pathValue, newNovel.Id, newNovel, ct.Token);
             }
 
-            return result == 1 ? newNovel : null;
+            return result == 1 ? _mapper.Map<NovelResult>(newNovel) : null;
         }
 
         public async Task<List<NovelResult>> GetAll() {
@@ -69,7 +70,9 @@
 
             if (cacheResult != null) {
 
-                return cacheResult as List<NovelResult>;
+                var result = _mapper.Map<List<NovelResult>>(cacheResult);
+
+                return result;
             }
 
             var query =
@@ -96,27 +99,34 @@
                 return novelResult;
             }
 
-            throw new NoRecordFoundException(string.Empty);
+            throw new NoRecordFoundException("Novel not found");
         }
 
-        public async Task<Novels> GetById(int novelId) {
+        public async Task<NovelResult> GetById(int novelId) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-            var cacheResult = _cache.GetCache(_pathValue);
+            var apiEndpoint = _pathValue.Replace("/genre", "");
+
+            var cacheResult = _cache.GetCache(apiEndpoint);
 
             if (cacheResult != null) {
 
-                return cacheResult as Novels;
+                return ReturnNovel(cacheResult as Novels);
             }
 
-            var novel = await _dbContext.Novels
+            var result = await _dbContext.Novels
                 .FirstOrDefaultAsync(c => c.Id == novelId, ct.Token)
                 .ConfigureAwait(false);
             
-            await _cache.CreateAsync(_pathValue, novel, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+            await _cache.CreateAsync(apiEndpoint, result, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
 
-            return novel;
+            return ReturnNovel(result);
+
+            NovelResult ReturnNovel(Novels novel) {
+
+                return _mapper.Map<NovelResult>(novel);
+            }
         }
     }
 

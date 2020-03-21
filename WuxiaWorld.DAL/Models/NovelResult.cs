@@ -5,10 +5,7 @@
 
     using Entities;
 
-    public class NovelResult {
-        public int NovelId { get; set; }
-        public string Name { get; set; }
-        public string Synopsis { get; set; }
+    public class NovelResult : IdNameModel {
         public DateTime TimeCreated { get; set; }
         public List<Chapters> Chapters { get; set; }
         public List<NovelGenreResult> Genres { get; set; }

@@ -22,7 +22,7 @@
             _novelRepository = novelRepository ?? throw new ArgumentNullException(nameof(novelRepository));
         }
 
-        public async Task<Novels> Create(NovelModel input) {
+        public async Task<NovelResult> Create(NovelModel input) {
 
             var newNovel = await _novelRepository.Create(input).ConfigureAwait(false);
 
@@ -39,7 +39,7 @@
             return await _novelRepository.GetAll().ConfigureAwait(false);
         }
 
-        public async Task<Novels> GetById(int novelId) {
+        public async Task<NovelResult> GetById(int novelId) {
 
             return await _novelRepository.GetById(novelId);
         }

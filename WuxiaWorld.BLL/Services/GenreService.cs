@@ -23,27 +23,27 @@
             _genreRepository = genreRepository ?? throw new ArgumentNullException(nameof(genreRepository));
         }
 
-        public async Task<List<Genres>> GetAll() {
+        public async Task<List<IdNameModel>> GetAll() {
 
             var result = await _genreRepository.GetAllAsync();
 
             if (result == null) {
-                throw new NoRecordFoundException(string.Empty);
+                throw new NoRecordFoundException("Genre not found");
             }
 
             return result;
         }
 
-        public async Task<Genres> GetByName(string genreName) {
-
-            var result = await _genreRepository.GetByName(genreName);
-
-            if (result == null) {
-                throw new NoRecordFoundException(string.Empty);
-            }
-
-            return result;
-        }
+        // public async Task<Genres> GetByName(string genreName) {
+        //
+        //     var result = await _genreRepository.GetByName(genreName);
+        //
+        //     if (result == null) {
+        //         throw new NoRecordFoundException(string.Empty);
+        //     }
+        //
+        //     return result;
+        // }
 
         public async Task<Genres> Create(GenreModel genre) {
 

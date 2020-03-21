@@ -8,13 +8,13 @@
 
     public interface INovelService {
 
-        Task<Novels> Create(NovelModel input);
+        Task<NovelResult> Create(NovelModel input);
 
 
         Task<List<NovelResult>> GetAll();
 
 
-        Task<Novels> GetById(int novelId);
+        Task<NovelResult> GetById(int novelId);
     }
 
 }

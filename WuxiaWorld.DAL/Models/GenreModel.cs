@@ -1,7 +1,6 @@
 ﻿namespace WuxiaWorld.DAL.Models {
 
-    public class GenreModel {
-        public string Name { get; set; }
+    public class GenreModel : IdNameModel {
     }
 
 }

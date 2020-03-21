@@ -50,7 +50,7 @@
 
             var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-            if (result == 1) {
+            if (result > 0) {
                 await _cache.CreateAsync($"{_pathValue}/{novelChapter.Id}",
                         novelChapter,
                         new CancellationChangeToken(ct.Token))
@@ -100,7 +100,7 @@
 
             await _cache.CreateAsync(_pathValue, chapter, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
 
-            return result == 1 ? chapter : null;
+            return result > 0 ? chapter : null;
         }
 
         public async Task<bool> IsAlreadyPublished(int novelId, int chapterNumber) {

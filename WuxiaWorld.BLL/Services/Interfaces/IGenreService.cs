@@ -8,10 +8,10 @@
 
     public interface IGenreService {
 
-        Task<List<Genres>> GetAll();
+        Task<List<IdNameModel>> GetAll();
 
 
-        Task<Genres> GetByName(string genreName);
+        // Task<Genres> GetByName(string genreName);
 
 
         Task<Genres> Create(GenreModel genre);

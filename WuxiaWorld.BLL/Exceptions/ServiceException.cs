@@ -36,7 +36,7 @@
     }
 
     public class OneOrMoreGenreNotFoundException : ServiceException {
-        public OneOrMoreGenreNotFoundException(string message) : base(message) {
+        public OneOrMoreGenreNotFoundException(string message = "One or more genre not found") : base(message) {
         }
     }
 
