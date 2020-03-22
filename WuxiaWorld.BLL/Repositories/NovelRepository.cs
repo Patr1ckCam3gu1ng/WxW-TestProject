@@ -61,17 +61,13 @@
             return result == 1 ? _mapper.Map<NovelResult>(newNovel) : null;
         }
 
-        public async Task<List<NovelResult>> GetAll(int? novelId) {
+        public async Task<List<NovelResult>> GetAll(int? novelId = null) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-            var cacheResult = _cache.GetCache(_pathValue);
+            if (GetNovelCache(novelId, out var cacheList)) {
 
-            if (cacheResult != null) {
-
-                var result = _mapper.Map<List<NovelResult>>(cacheResult);
-
-                return result;
+                return cacheList;
             }
 
             var query =
@@ -79,6 +75,7 @@
                     .Include(c => c.Chapters)
                     .Include(c => c.NovelGenres)
                     .ThenInclude(c => c.Genres)
+                    .Where(c=>c.Id == (novelId ?? c.Id))
                 select new Novels {
                     Id = novel.Id,
                     Name = novel.Name,
@@ -91,34 +88,78 @@
 
             if (novels != null) {
 
-                var novelResult = _mapper.Map<List<NovelResult>>(novels);
+                if (novels.Any()) {
 
-                await CacheNovels(novelResult, ct);
+                    var novelResult = _mapper.Map<List<NovelResult>>(novels);
 
-                foreach (var novel in novels) {
+                    await CacheNovels(novelResult, ct);
 
-                    await CacheNovelsById(novel, ct);
+                    foreach (var novel in novels) {
 
-                    await CacheNovelChapters(novel, ct);
+                        await CacheNovelsById(novel, ct);
 
-                    await CacheNovelChaptersByNumber(novel, ct);
+                        await CacheNovelChapters(novel, ct);
 
-                    await CacheGenreById(novel, ct);
+                        await CacheNovelChaptersByNumber(novel, ct);
 
-                    await CacheGenreList(novel, ct);
+                        await CacheGenreById(novel, ct);
+
+                        await CacheGenreList(novel, ct);
+                    }
+
+                    return novelResult;
                 }
-
-                return novelResult;
             }
 
             throw new NoRecordFoundException("Novel not found");
         }
 
+        #region Cache Management
+
+        private bool GetNovelCache(int? novelId, out List<NovelResult> list) {
+
+            if (novelId == null) {
+
+                var cacheResult = _cache.GetCache(_pathValue);
+
+                if (cacheResult != null) {
+
+                    var result = _mapper.Map<List<NovelResult>>(cacheResult);
+
+                    {
+                        list = result;
+                        return true;
+                    }
+                }
+            }
+            else {
+
+                var cacheResult = _cache.GetCache($"/api/novels/{novelId}");
+
+                if (cacheResult != null) {
+
+                    var novelResult = _mapper.Map<NovelResult>(cacheResult as Novels);
+
+                    {
+                        list = new List<NovelResult> {
+                            novelResult
+                        };
+                        return true;
+                    }
+                }
+            }
+
+            list = null;
+
+            return false;
+        }
+
         private async Task CacheGenreList(Novels novel, CancellationTokenSource ct) {
 
-            var keyValue = $"/api/genres";
+            var keyValue = "/api/genres";
 
-            var genreList = novel.NovelGenres.Select(genre => _mapper.Map<IdNameModel>(genre)).ToList();
+            var genreList = novel.NovelGenres.Select(novelGenre => _mapper.Map<IdNameModel>(novelGenre.Genres))
+                .ToList();
 
             if (_cache.GetCache(keyValue) is List<IdNameModel> cacheGenreList) {
 
@@ -156,8 +197,6 @@
                     .ConfigureAwait(false);
             }
         }
-
-        #region Cache Management
 
         private async Task CacheGenreById(Novels novel, CancellationTokenSource ct) {
 

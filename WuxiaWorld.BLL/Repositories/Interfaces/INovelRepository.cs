@@ -10,10 +10,7 @@
         Task<NovelResult> Create(NovelModel input);
 
 
-        Task<List<NovelResult>> GetAll(int? novelId);
-
-
-        // Task<NovelResult> GetById(int novelId);
+        Task<List<NovelResult>> GetAll(int? novelId = null);
     }
 
 }

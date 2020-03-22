@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using DAL.Entities;
     using DAL.Models;
 
     using Exceptions;
@@ -34,12 +33,7 @@
             return newNovel;
         }
 
-        public async Task<List<NovelResult>> GetAll() {
-
-            return await _novelRepository.GetAll().ConfigureAwait(false);
-        }
-
-        public async Task<NovelResult> GetById(int novelId) {
+        public async Task<List<NovelResult>> GetAll(int? novelId) {
 
             return await _novelRepository.GetAll(novelId).ConfigureAwait(false);
         }

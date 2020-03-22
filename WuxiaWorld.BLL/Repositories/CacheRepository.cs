@@ -5,8 +5,6 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using AutoMapper;
-
     using Interfaces;
 
     using Microsoft.Extensions.Caching.Memory;
@@ -15,12 +13,10 @@
     public class CacheRepository : ICacheRepository {
 
         private readonly IMemoryCache _cache;
-        private readonly IMapper _mapper;
 
-        public CacheRepository(IMemoryCache cache, IMapper mapper) {
+        public CacheRepository(IMemoryCache cache) {
 
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public object GetCache(string keyValue) {
@@ -43,16 +39,15 @@
             return Task.CompletedTask;
         }
 
-        public Task RemoveAsync(string keyValue) {
+        public async Task RemoveAsync(string keyValue) {
 
-            _cache.Remove(keyValue);
-
-            _cache.Remove($"{keyValue}/");
-
-            return Task.CompletedTask;
+            await Task.Run(() => {
+                _cache.Remove(keyValue);
+            });
         }
 
-        public async Task UpsertAsync(string apiEndpointKeyValue, int newId, object newRecord, CancellationToken ctToken) {
+        public async Task UpsertAsync(string apiEndpointKeyValue, int newId, object newRecord,
+            CancellationToken ctToken) {
 
             await CreateAsync($"{apiEndpointKeyValue}/{newId}", newRecord, new CancellationChangeToken(ctToken))
                 .ConfigureAwait(false);

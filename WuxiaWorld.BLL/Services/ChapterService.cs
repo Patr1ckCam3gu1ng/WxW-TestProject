@@ -34,7 +34,7 @@
             // INFO: This means that the chapter number does not yet exists within the novel
             if (novelByChapterNumber == null) {
 
-                var novel = await _novelService.GetById(novelId).ConfigureAwait(false);
+                var novel = await _novelService.GetAll(novelId).ConfigureAwait(false);
 
                 if (novel != null) {
 

@@ -17,6 +17,8 @@
 
             CreateMap<GenreModel, Genres>();
 
+            CreateMap<Genres, IdNameModel>();
+
             CreateMap<ChapterModel, Chapters>();
             CreateMap<Chapters, ChapterModel>();
 
@@ -33,10 +35,6 @@
                     f => f.MapFrom(c => c.Genres.Name));
 
             CreateMap<Chapters, NovelChaptersResult>();
-
-            // CreateMap<Genres, NovelGenreResult>()
-            //     .ForMember(c => c.Name,
-            //         f => f.MapFrom(c => c.Name));
         }
     }
 

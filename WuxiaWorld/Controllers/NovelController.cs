@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.Controllers {
 
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using BLL.ActionFilters;
@@ -26,21 +27,17 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() {
-
-            try {
-                return Ok(await _novelService.GetAll());
-            }
-            catch (NoRecordFoundException) {
-                return NoContent();
-            }
-        }
-
         [HttpGet("{novelId}")]
-        public async Task<IActionResult> GetById(int novelId) {
+        public async Task<IActionResult> Get(int? novelId) {
 
             try {
-                return Ok(await _novelService.GetById(novelId));
+                if (novelId == null) {
+                    return Ok(await _novelService.GetAll());
+                }
+
+                var novel = await _novelService.GetAll(novelId);
+
+                return Ok(novel.FirstOrDefault());
             }
             catch (NoRecordFoundException) {
                 return NoContent();
