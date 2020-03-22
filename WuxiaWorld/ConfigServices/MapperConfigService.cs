@@ -26,9 +26,17 @@
                 .ForMember(c => c.Chapters,
                     f => f.MapFrom(c => c.Chapters.ToList()));
 
-            CreateMap<NovelGenres, NovelGenreResult>();
+            CreateMap<NovelGenres, NovelGenreResult>()
+                .ForMember(c => c.Id,
+                    f => f.MapFrom(c => c.Genres.Id))
+                .ForMember(c => c.Name,
+                    f => f.MapFrom(c => c.Genres.Name));
 
-            CreateMap<Genres, IdNameModel>();
+            CreateMap<Chapters, NovelChaptersResult>();
+
+            // CreateMap<Genres, NovelGenreResult>()
+            //     .ForMember(c => c.Name,
+            //         f => f.MapFrom(c => c.Name));
         }
     }
 

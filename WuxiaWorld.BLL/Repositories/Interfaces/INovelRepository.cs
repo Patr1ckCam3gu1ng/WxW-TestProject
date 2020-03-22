@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using DAL.Entities;
     using DAL.Models;
 
     public interface INovelRepository {
@@ -11,10 +10,10 @@
         Task<NovelResult> Create(NovelModel input);
 
 
-        Task<List<NovelResult>> GetAll();
+        Task<List<NovelResult>> GetAll(int? novelId);
 
 
-        Task<NovelResult> GetById(int novelId);
+        // Task<NovelResult> GetById(int novelId);
     }
 
 }

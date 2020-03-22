@@ -33,7 +33,7 @@
 
         [Fact]
         public void GetAll_AssertReturningOK() {
-            var controllerGet = _controller.Get().GetAwaiter();
+            var controllerGet = _controller.GetAll().GetAwaiter();
 
             if (controllerGet.IsCompleted) {
 
@@ -52,7 +52,7 @@
                     new IdNameModel()
                 });
 
-            var controllerGet = _controller.Get().GetAwaiter();
+            var controllerGet = _controller.GetAll().GetAwaiter();
 
             if (controllerGet.IsCompleted) {
 

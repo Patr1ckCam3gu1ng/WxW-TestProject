@@ -27,7 +27,7 @@
 
         public async Task<bool> Assign(int novelId, List<int> genreIds) {
 
-            var novel = await _novelRepository.GetById(novelId).ConfigureAwait(false);
+            var novel = await _novelRepository.GetAll(novelId).ConfigureAwait(false);
 
             if (novel == null) {
                 throw new NoRecordFoundException("Novel not found");

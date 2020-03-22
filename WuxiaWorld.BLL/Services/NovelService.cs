@@ -41,7 +41,7 @@
 
         public async Task<NovelResult> GetById(int novelId) {
 
-            return await _novelRepository.GetById(novelId).ConfigureAwait(false);
+            return await _novelRepository.GetAll(novelId).ConfigureAwait(false);
         }
     }
 

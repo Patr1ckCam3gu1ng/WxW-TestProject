@@ -21,13 +21,13 @@
     using Microsoft.Extensions.Primitives;
 
     public class NovelRepository : INovelRepository {
+
         private readonly ICacheRepository _cache;
 
         private readonly int _cancelTokenFromSeconds;
 
         private readonly WuxiaWorldDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _pathValue;
 
         public NovelRepository(WuxiaWorldDbContext dbContext, IMapper mapper, IOptions<CancelToken> cancelToken,
@@ -35,7 +35,6 @@
 
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _httpContextAccessor = httpContextAccessor;
             _pathValue = httpContextAccessor.HttpContext.Request.Path.Value ??
                          throw new ArgumentNullException(nameof(httpContextAccessor));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -62,7 +61,7 @@
             return result == 1 ? _mapper.Map<NovelResult>(newNovel) : null;
         }
 
-        public async Task<List<NovelResult>> GetAll() {
+        public async Task<List<NovelResult>> GetAll(int? novelId) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
@@ -78,7 +77,8 @@
             var query =
                 from novel in _dbContext.Novels
                     .Include(c => c.Chapters)
-                    .Include(c => c.NovelGenres).ThenInclude(c => c.Genres)
+                    .Include(c => c.NovelGenres)
+                    .ThenInclude(c => c.Genres)
                 select new Novels {
                     Id = novel.Id,
                     Name = novel.Name,
@@ -86,48 +86,167 @@
                     NovelGenres = novel.NovelGenres,
                     Chapters = (ICollection<Chapters>) novel.Chapters.Where(c => c.ChapterPublishDate != null)
                 };
-            
+
             var novels = await query.ToListAsync(ct.Token).ConfigureAwait(false);
-            
+
             if (novels != null) {
-            
+
                 var novelResult = _mapper.Map<List<NovelResult>>(novels);
-            
-                await _cache.CreateAsync(_pathValue, novelResult, new CancellationChangeToken(ct.Token))
-                    .ConfigureAwait(false);
-            
+
+                await CacheNovels(novelResult, ct);
+
+                foreach (var novel in novels) {
+
+                    await CacheNovelsById(novel, ct);
+
+                    await CacheNovelChapters(novel, ct);
+
+                    await CacheNovelChaptersByNumber(novel, ct);
+
+                    await CacheGenreById(novel, ct);
+
+                    await CacheGenreList(novel, ct);
+                }
+
                 return novelResult;
             }
 
             throw new NoRecordFoundException("Novel not found");
         }
 
-        public async Task<NovelResult> GetById(int novelId) {
+        private async Task CacheGenreList(Novels novel, CancellationTokenSource ct) {
 
-            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+            var keyValue = $"/api/genres";
 
-            var apiEndpoint = $"/api/novels/{novelId}";
+            var genreList = novel.NovelGenres.Select(genre => _mapper.Map<IdNameModel>(genre)).ToList();
 
-            var cacheResult = _cache.GetCache(apiEndpoint);
+            if (_cache.GetCache(keyValue) is List<IdNameModel> cacheGenreList) {
 
-            if (cacheResult != null) {
+                foreach (var cacheGenre in cacheGenreList) {
 
-                return ReturnNovel(cacheResult as Novels);
+                    var genreToRemove = genreList.FirstOrDefault(r => r.Id == cacheGenre.Id);
+
+                    if (genreToRemove != null) {
+
+                        genreList.Remove(genreToRemove);
+                    }
+                }
+
+                cacheGenreList.AddRange(genreList);
+
+                await UpsertGenreList(cacheGenreList);
+            }
+            else {
+
+                if (genreList.Any()) {
+
+                    await UpsertGenreList(genreList);
+                }
             }
 
-            var result = await _dbContext.Novels
-                .FirstOrDefaultAsync(c => c.Id == novelId, ct.Token)
-                .ConfigureAwait(false);
-            
-            await _cache.CreateAsync(apiEndpoint, result, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+            return;
 
-            return ReturnNovel(result);
+            async Task UpsertGenreList(List<IdNameModel> list) {
 
-            NovelResult ReturnNovel(Novels novel) {
+                await _cache.RemoveAsync(keyValue);
 
-                return _mapper.Map<NovelResult>(novel);
+                await _cache.CreateAsync(keyValue,
+                        list,
+                        new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
             }
         }
+
+        #region Cache Management
+
+        private async Task CacheGenreById(Novels novel, CancellationTokenSource ct) {
+
+            foreach (var novelGenre in novel.NovelGenres) {
+
+                var keyValue = $"api/genres/{novelGenre.Genres.Id}";
+
+                await _cache.RemoveAsync(keyValue);
+
+                await _cache.CreateAsync(keyValue,
+                        novelGenre.Genres,
+                        new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+            }
+        }
+
+        private async Task CacheNovelChapters(Novels novel, CancellationTokenSource ct) {
+
+            var keyValue = $"{_pathValue}/{novel.Id}/chapters";
+
+            await _cache.RemoveAsync(keyValue);
+
+            await _cache.CreateAsync(keyValue,
+                    novel.Chapters,
+                    new CancellationChangeToken(ct.Token))
+                .ConfigureAwait(false);
+        }
+
+        private async Task CacheNovelChaptersByNumber(Novels novel, CancellationTokenSource ct) {
+
+            foreach (var chapter in novel.Chapters) {
+
+                var keyValue = $"{_pathValue}/{novel.Id}/chapters/{chapter.ChapterNumber}";
+
+                await _cache.RemoveAsync(keyValue);
+
+                await _cache.CreateAsync(keyValue,
+                        chapter,
+                        new CancellationChangeToken(ct.Token))
+                    .ConfigureAwait(false);
+            }
+        }
+
+        private async Task CacheNovels(List<NovelResult> novelResult, CancellationTokenSource ct) {
+
+            await _cache.CreateAsync(_pathValue, novelResult, new CancellationChangeToken(ct.Token))
+                .ConfigureAwait(false);
+        }
+
+        private async Task CacheNovelsById(Novels novel, CancellationTokenSource ct) {
+
+            var keyValue = $"{_pathValue}/{novel.Id}";
+
+            await _cache.RemoveAsync(keyValue);
+
+            await _cache.CreateAsync(keyValue,
+                    novel,
+                    new CancellationChangeToken(ct.Token))
+                .ConfigureAwait(false);
+        }
+
+        #endregion
+
+        // public async Task<NovelResult> GetById(int novelId) {
+        //
+        //     var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+        //
+        //     var apiEndpoint = $"/api/novels/{novelId}";
+        //
+        //     var cacheResult = _cache.GetCache(apiEndpoint);
+        //
+        //     if (cacheResult != null) {
+        //
+        //         return ReturnNovel(cacheResult as Novels);
+        //     }
+        //
+        //     var result = await _dbContext.Novels
+        //         .FirstOrDefaultAsync(c => c.Id == novelId, ct.Token)
+        //         .ConfigureAwait(false);
+        //     
+        //     await _cache.CreateAsync(apiEndpoint, result, new CancellationChangeToken(ct.Token)).ConfigureAwait(false);
+        //
+        //     return ReturnNovel(result);
+        //
+        //     NovelResult ReturnNovel(Novels novel) {
+        //
+        //         return _mapper.Map<NovelResult>(novel);
+        //     }
+        // }
     }
 
 }
