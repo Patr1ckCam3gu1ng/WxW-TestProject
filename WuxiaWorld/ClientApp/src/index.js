@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CommandContainer from './app/command/container/command.container';
+import NovelContainer from './app/containers/novel.container';
 
-ReactDOM.render(<CommandContainer />, document.getElementById('main'));
+ReactDOM.render(<NovelContainer />, document.getElementById('main'));

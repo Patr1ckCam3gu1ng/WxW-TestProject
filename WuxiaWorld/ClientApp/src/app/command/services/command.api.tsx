@@ -1,7 +1,7 @@
 import apis from '../../api';
-import { Genre } from '../models/genre.interface';
-import { UserAccount } from '../models/userAccount.interface';
-import { Novel } from '../models/novel.interface';
+import { Genre } from '../../models/genre.interface';
+import { UserAccount } from '../../models/userAccount.interface';
+import { Novel } from '../../models/novel.interface';
 
 function throwError({ error }: { error: any }): object {
     const { status, data } = error.response;

@@ -1,4 +1,4 @@
-import { Actions } from '../models/actions.interface';
+import { Actions } from '../../models/actions.interface';
 
 export default {
     invalidCredential: (errorCode: number, actionSetState: Actions): void => {

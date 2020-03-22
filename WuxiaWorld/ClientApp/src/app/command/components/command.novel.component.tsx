@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Novel } from '../models/novel.interface';
+import { Novel } from '../../models/novel.interface';
 
 interface Props {
     novel: Novel[];

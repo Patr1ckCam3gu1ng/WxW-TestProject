@@ -1,8 +1,8 @@
 import axios from 'axios';
 import common from '../common';
-import { UserAccount } from '../command/models/userAccount.interface';
-import { Genre } from '../command/models/genre.interface';
-import { Novel } from '../command/models/novel.interface';
+import { UserAccount } from '../models/userAccount.interface';
+import { Genre } from '../models/genre.interface';
+import { Novel } from '../models/novel.interface';
 
 const apiRootUrl = common.apiUrl();
 
@@ -22,7 +22,7 @@ export default {
                 })().then(data => data);
             },
             novel: (authenticationHeader: string, commandType: string): Promise<Novel[]> => {
-                return (async function(): Promise<Novel[]> {
+                return (async function (): Promise<Novel[]> {
                     return (
                         await axios.get(`${apiRootUrl}/${commandType}`, {
                             headers: { Authorization: authenticationHeader },

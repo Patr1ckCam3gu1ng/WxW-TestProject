@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Genre } from '../models/genre.interface';
+import { Genre } from '../../models/genre.interface';
 
 interface Props {
     genres: Genre[];

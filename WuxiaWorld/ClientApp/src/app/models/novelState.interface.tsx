@@ -1,7 +1,7 @@
 import { Genre } from './genre.interface';
 import { Novel } from './novel.interface';
 
-export interface CommandState {
+export interface NovelState {
     genres: Genre[];
     novels: Novel[];
     inputValue: string;

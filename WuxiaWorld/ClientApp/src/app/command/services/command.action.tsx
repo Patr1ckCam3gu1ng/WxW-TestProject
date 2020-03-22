@@ -1,10 +1,10 @@
 import api from './command.api';
-import { Genre } from '../models/genre.interface';
-import { UserAccount } from '../models/userAccount.interface';
-import { Actions } from '../models/actions.interface';
-import { ApiError } from '../models/apiError.interface';
+import { Genre } from '../../models/genre.interface';
+import { UserAccount } from '../../models/userAccount.interface';
+import { Actions } from '../../models/actions.interface';
+import { ApiError } from '../../models/apiError.interface';
 import error from '../services/command.error';
-import { Novel } from '../models/novel.interface';
+import { Novel } from '../../models/novel.interface';
 
 const actions = {
     getFirstCommand: (value: string) => {
@@ -77,7 +77,7 @@ export default {
             api.login(userAccount)
                 .then((newToken: string | any) => {
                     localStorage.setItem('jwtToken', newToken);
-                    actionSetState.setMessage(`Login successful. Welcome ${userAccount.username}`)
+                    actionSetState.setMessage(`Login successful. Welcome ${userAccount.username}`);
                 })
                 .catch((apiError: ApiError) => {
                     error.invalidCredential(apiError.code, actionSetState);
