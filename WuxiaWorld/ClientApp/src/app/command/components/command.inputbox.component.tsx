@@ -1,40 +1,33 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { NovelContext } from '../../contexts/NovelContext';
-import { NovelState } from '../../models/novelState.interface';
-import { AuthContext } from '../../contexts/AuthContext';
-import { AuthStateInterface } from '../../models/authState.interface';
+import { InputboxAction, Commands } from '../../models/inputbox.interface';
 
-const CounterComponent = (): any => {
+const CounterComponent = () => {
+    // @ts-ignore
+    const { dispatch } = useContext(NovelContext);
+    const [inputValue, setInputValue] = useState('');
+
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        dispatch({
+            type: Commands.SendCommand,
+            inputValue,
+        } as InputboxAction);
+        setInputValue('');
+    };
+
     return (
-        <AuthContext.Consumer>
-            {(authContext: Partial<AuthStateInterface>): any => (
-                <NovelContext.Consumer>
-                    {({ inputValue }: Partial<NovelState>): any => {
-                        return <input type={'text'} value={inputValue} />;
-                    }}
-                </NovelContext.Consumer>
-            )}
-        </AuthContext.Consumer>
+        <form onSubmit={handleSubmit}>
+            <input
+                type="text"
+                required
+                value={inputValue}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
+                    setInputValue(event.currentTarget.value)
+                }
+            />
+        </form>
     );
 };
 
 export default CounterComponent;
-
-// export default class CommandInputBox extends PureComponent {
-// render = () => (
-//     <div>
-//         <input
-//             type={'text'}
-//             onKeyUp={(event: React.KeyboardEvent<HTMLInputElement>) => {
-//                 if (event.keyCode === 13) {
-//                     this.props.onEnter(event.currentTarget.value, this.props.actionSetState);
-//                 }
-//             }}
-//             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-//                 this.props.setInputValue(event.currentTarget.value);
-//             }}
-//             value={this.props.inputValue}
-//         />
-//     </div>
-// );
-// }

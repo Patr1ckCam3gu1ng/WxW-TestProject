@@ -1,19 +1,16 @@
-import React, { Component, createContext } from 'react';
-import { NovelState } from '../models/novelState.interface';
+import React, { createContext, useReducer } from 'react';
 
-export const NovelContext = createContext<Partial<NovelState>>({});
+import { InputBoxReducer } from '../reducers/inputBoxReducer';
+import { InputboxInterface } from '../models/inputbox.interface';
 
-class NovelContextProvider extends Component {
-    state: NovelState = {
-        genres: [],
-        novels: [],
-        inputValue: '',
-        message: '',
+export const NovelContext = createContext({});
+
+const NovelContextProvider = (props: { children: React.ReactNode }): any => {
+    const initialArg: InputboxInterface = {
+        value: '',
     };
-
-    render() {
-        return <NovelContext.Provider value={{ ...this.state }}>{this.props.children}</NovelContext.Provider>;
-    }
-}
+    const [value, dispatch] = useReducer(InputBoxReducer, initialArg);
+    return <NovelContext.Provider value={{ value, dispatch }}>{props.children}</NovelContext.Provider>;
+};
 
 export default NovelContextProvider;

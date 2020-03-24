@@ -6,4 +6,5 @@ export interface NovelState {
     novels: Novel[];
     inputValue: string;
     message: string;
+    dispatch: void;
 }
