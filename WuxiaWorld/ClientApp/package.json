@@ -22,11 +22,12 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "axios": "latest",
     "eslint-plugin-react": "^7.19.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-scripts": "3.4.0",
-    "axios": "latest"
+    "terminal-in-react": "^4.3.1"
   },
   "browserslist": {
     "production": [

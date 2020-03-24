@@ -1,32 +1,44 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import Terminal from 'terminal-in-react';
 import { NovelContext } from '../../contexts/NovelContext';
-import { InputboxAction, Commands } from '../../models/inputbox.interface';
+import { Commands, InputboxAction } from '../../models/inputbox.interface';
 
 const CounterComponent = () => {
     // @ts-ignore
     const { dispatch } = useContext(NovelContext);
-    const [inputValue, setInputValue] = useState('');
-
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        dispatch({
-            type: Commands.SendCommand,
-            inputValue,
-        } as InputboxAction);
-        setInputValue('');
-    };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                required
-                value={inputValue}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
-                    setInputValue(event.currentTarget.value)
-                }
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+            }}
+        >
+            <Terminal
+                color="green"
+                backgroundColor="black"
+                barColor="black"
+                style={{ fontWeight: 'bold', fontSize: '1em' }}
+                commands={{
+                    list: {
+                        method: (args: any, print: any) => {
+                            dispatch({
+                                type: Commands.SendCommand,
+                                inputValue: args._[0],
+                                print: print,
+                            } as InputboxAction);
+                        },
+                    },
+                }}
+                msg="Welcome to WuxiaWorld. Enter command:"
+                allowTabs={false}
+                commandPassThrough={(cmd, print: any) => {
+                    print('Hello');
+                }}
             />
-        </form>
+        </div>
     );
 };
 

@@ -5,6 +5,7 @@ export interface InputboxInterface {
 export interface InputboxAction {
     type: string;
     inputValue: string;
+    print: any;
 }
 
 export class Commands {
