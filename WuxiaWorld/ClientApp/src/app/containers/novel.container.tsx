@@ -1,15 +1,15 @@
 import React from 'react';
 
-import CommandInputBox from '../command/components/command.inputbox.component';
-import AuthContextProvider from '../contexts/AuthContext';
-import NovelContextProvider from '../contexts/NovelContext';
+import CommandInputBox from '../components/terminal.component';
+import GenreContextProvider from '../contexts/genre.context';
+import AuthContextProvider from '../contexts/auth.context';
 
 function NovelContainer() {
     return (
         <AuthContextProvider>
-            <NovelContextProvider>
+            <GenreContextProvider>
                 <CommandInputBox />
-            </NovelContextProvider>
+            </GenreContextProvider>
         </AuthContextProvider>
     );
 }

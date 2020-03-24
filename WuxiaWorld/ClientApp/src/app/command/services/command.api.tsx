@@ -10,41 +10,41 @@ function throwError({ error }: { error: any }): object {
         message: data,
     });
 }
-
-export default {
-    get: {
-        genres: (commandType: string, authenticationHeader: string): Promise<Genre[] | any> => {
-            return apis
-                .get()
-                .genre(authenticationHeader, commandType)
-                .then((value: Genre[]) => {
-                    return value;
-                })
-                .catch(function(error) {
-                    throwError({ error: error });
-                });
-        },
-        novels: (commandType: string, authenticationHeader: string): Promise<Novel[] | any> => {
-            return apis
-                .get()
-                .novel(authenticationHeader, commandType)
-                .then((value: Novel[]) => {
-                    return value;
-                })
-                .catch(function(error) {
-                    throwError({ error: error });
-                });
-        },
-    },
-    login: (userAccount: UserAccount): Promise<string | any> => {
-        return apis
-            .auth()
-            .login(userAccount)
-            .then((value: string) => {
-                return value;
-            })
-            .catch(function(error) {
-                throwError({ error: error });
-            });
-    },
-};
+//
+// export default {
+//     get: {
+//         genres: (authenticationHeader: string, commandType: string): Promise<Genre[] | any> => {
+//             return apis
+//                 .get()
+//                 .genre(authenticationHeader, commandType)
+//                 .then((value: Genre[]) => {
+//                     return value;
+//                 })
+//                 .catch(function(error) {
+//                     throwError({ error: error });
+//                 });
+//         },
+//         novels: (commandType: string, authenticationHeader: string): Promise<Novel[] | any> => {
+//             return apis
+//                 .get()
+//                 .novel(authenticationHeader, commandType)
+//                 .then((value: Novel[]) => {
+//                     return value;
+//                 })
+//                 .catch(function(error) {
+//                     throwError({ error: error });
+//                 });
+//         },
+//     },
+//     login: (userAccount: UserAccount): Promise<string | any> => {
+//         return apis
+//             .auth()
+//             .login(userAccount)
+//             .then((value: string) => {
+//                 return value;
+//             })
+//             .catch(function(error) {
+//                 throwError({ error: error });
+//             });
+//     },
+// };
