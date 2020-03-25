@@ -30,9 +30,6 @@
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-            // INFO: Delete first the existing records
-            await DeleteExistingNovelGenre(novelId, ct);
-
             // INFO: Then lets re insert the new ones
             await AssignNewNovelGenre(novelId, genreIds, ct);
 
@@ -41,6 +38,13 @@
                 .ConfigureAwait(false);
 
             return isSuccess > 0;
+        }
+
+        public async Task UnAssign(int novelId, int genreId) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            await DeleteExistingNovelGenre(novelId, genreId, ct).ConfigureAwait(false);
         }
 
         #region Private Methods
@@ -60,17 +64,16 @@
             }
         }
 
-        private async Task DeleteExistingNovelGenre(int novelId, CancellationTokenSource ct) {
+        private async Task DeleteExistingNovelGenre(int novelId, int genreId, CancellationTokenSource ct) {
 
             var novels = await _dbContext.NovelGenres
-                .Where(c => c.NovelId == novelId)
-                .ToListAsync(ct.Token)
+                .Where(c => c.NovelId == novelId && c.GenreId == genreId)
+                .FirstOrDefaultAsync(ct.Token)
                 .ConfigureAwait(false);
 
             if (novels != null) {
-                if (novels.Count > 0) {
-                    _dbContext.RemoveRange(novels);
-                }
+                _dbContext.Remove(novels);
+                await _dbContext.SaveChangesAsync();
             }
         }
 

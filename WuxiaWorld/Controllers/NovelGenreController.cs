@@ -26,6 +26,28 @@
         }
 
         [HttpPost]
+        [Route("{novelId}/genre/{genreId}/unAssign")]
+        public async Task<IActionResult> UnAssign(int novelId, int genreId) {
+
+            try {
+                await _novelGenreService
+                    .UnAssign(novelId, genreId)
+                    .ConfigureAwait(false);
+
+                return Ok();
+            }
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (OneOrMoreGenreNotFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (NovelNotFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("{novelId}/genre/{genreId}")]
         public async Task<IActionResult> Publish(int novelId, int genreId) {
 

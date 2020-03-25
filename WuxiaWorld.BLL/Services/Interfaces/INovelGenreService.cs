@@ -6,6 +6,9 @@
     public interface INovelGenreService {
 
         Task<bool> Assign(int novelId, List<int> genreIds);
+
+
+        Task UnAssign(int novelId, int genreId);
     }
 
 }

@@ -42,7 +42,11 @@ export default {
     post(): {
         genre: (authenticationHeader: string, genreList: Genre[]) => Promise<Genre[]>;
         novels: (authenticationHeader: string, genreList: Novel[]) => Promise<Novel[]>;
-        novelGenre: (authenticationHeader: string, genreNovel: GenreNovel) => Promise<number | ApiError>;
+        novelGenre: (
+            authenticationHeader: string,
+            genreNovel: GenreNovel,
+            isUnAssign: boolean | null,
+        ) => Promise<number | ApiError>;
     } {
         return {
             genre: (authenticationHeader: string, genreList: Genre[]): Promise<Genre[]> => {
@@ -65,12 +69,22 @@ export default {
                         .catch(error => helper.throwError(error));
                 })();
             },
-            novelGenre: (authenticationHeader: string, genreNovel: GenreNovel): Promise<number | ApiError> => {
+            novelGenre: (
+                authenticationHeader: string,
+                genreNovel: GenreNovel,
+                isUnAssign: boolean | null,
+            ): Promise<number | ApiError> => {
                 return (async function(): Promise<number | ApiError> {
+                    console.log(isUnAssign)
+                    const unAssign = isUnAssign === null ? '' : '/unAssign';
                     return await axios
-                        .post(`${apiRootUrl}/novels/${genreNovel.novelId}/genre/${genreNovel.genreId}`, genreNovel, {
-                            headers: { Authorization: authenticationHeader },
-                        })
+                        .post(
+                            `${apiRootUrl}/novels/${genreNovel.novelId}/genre/${genreNovel.genreId}${unAssign}`,
+                            genreNovel,
+                            {
+                                headers: { Authorization: authenticationHeader },
+                            },
+                        )
                         .then(response => response.status)
                         .catch(error => helper.throwError(error));
                 })();

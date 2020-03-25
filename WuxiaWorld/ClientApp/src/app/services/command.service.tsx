@@ -21,6 +21,17 @@ export default function(
                 return;
             },
         },
+        'unassign-genre': {
+            method: (args: any, print: any, runCommand: any) => {
+                genreDispatch({
+                    type: Commands.GenreRemove,
+                    inputValue: args._,
+                    print: print,
+                    runCommand: runCommand,
+                } as Action);
+                return;
+            },
+        },
         list: {
             method: (args: any, print: any, runCommand: any) => {
                 const inputValue = args._[0];
@@ -61,14 +72,6 @@ export default function(
                         type: Commands.NovelCreate,
                         inputValue: args._.filter((value: string, index: number) => index > 0),
                         print: print,
-                    } as Action);
-                    return;
-                }
-                if (args._[0] === 'chapter') {
-                    chapterDispatch({
-                        type: Commands.ChapterCreate,
-                        print: print,
-                        runCommand: runCommand,
                     } as Action);
                     return;
                 } else {

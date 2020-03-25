@@ -43,6 +43,24 @@
 
             throw new OneOrMoreGenreNotFoundException();
         }
+
+        public async Task UnAssign(int novelId, int genreId) {
+
+            var novel = await _novelRepository.GetAll(novelId).ConfigureAwait(false);
+
+            if (novel == null) {
+                throw new NoRecordFoundException("Novel not found");
+            }
+
+            var genres = await _genreRepository.GetByIds(new List<int>() {
+                genreId
+            }).ConfigureAwait(false);
+
+            if (genres.Count > 0) {
+
+                await _novelGenreRepository.UnAssign(novelId, genreId).ConfigureAwait(false);
+            }
+        }
     }
 
 }

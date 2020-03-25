@@ -78,16 +78,20 @@ export default {
         action.print('Error: Please enter the correct command to create a genre');
         return state;
     },
-    assign: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {
+    assign: (action: Action, jwtToken: string, state: Inputbox, isUnAssign: boolean | null): Inputbox => {
         if (Array.isArray(action.inputValue) === true) {
             const splitNovelGenre = helper.splitQuoteString(action.inputValue) as string[];
             if (splitNovelGenre.length > 0) {
                 const novelGenreIds = getNovelGenreIds(splitNovelGenre);
                 if (novelGenreIds.novelId !== null && novelGenreIds.genreId !== null) {
                     apis.post()
-                        .novelGenre(jwtToken, novelGenreIds)
+                        .novelGenre(jwtToken, novelGenreIds, isUnAssign)
                         .then(status => {
                             if (status === 200) {
+                                if (isUnAssign === true) {
+                                    action.print('Success: Genre was unassigned/removed from the Novel');
+                                    return state;
+                                }
                                 action.print('Success: Genre assigned to Novel');
                             }
                         })
