@@ -1,6 +1,6 @@
-import { Action, AuthAction } from '../models/action.interface';
 import apis from '../api';
 import { UserAccount } from '../models/userAccount.interface';
+import { Action, AuthAction } from '../models/action.interface';
 import { ApiError } from '../models/apiError.interface';
 
 export default {

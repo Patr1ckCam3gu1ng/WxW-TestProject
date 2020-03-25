@@ -1,9 +1,9 @@
-import { Action } from '../models/action.interface';
 import apis from '../api';
-import { Novel } from '../models/novel.interface';
 import helper from './splitString.service';
-import { ApiError } from '../models/apiError.interface';
 import { ErrorMessage } from './throwError.service';
+import { Novel } from '../models/novel.interface';
+import { Action } from '../models/action.interface';
+import { ApiError } from '../models/apiError.interface';
 
 export default {
     list: (jwtToken: string, action: Action): void => {

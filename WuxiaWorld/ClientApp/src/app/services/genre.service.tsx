@@ -1,13 +1,11 @@
 import { ErrorMessage } from './throwError.service';
 import helper from './splitString.service';
-
-import { ApiError } from '../models/apiError.interface';
-import { GenreNovel } from '../models/genreNovel.interface';
-import { Action } from '../models/action.interface';
-import { Inputbox } from '../models/inputbox';
-import { Genre } from '../models/genre.interface';
-
 import apis from '../api';
+import { GenreNovel } from '../models/genreNovel.interface';
+import { Genre } from '../models/genre.interface';
+import { Inputbox } from '../models/inputbox';
+import { Action } from '../models/action.interface';
+import { ApiError } from '../models/apiError.interface';
 
 function getNovelGenreIds(splitNovelGenre: string[]): GenreNovel {
     let novelId: number | null = null;

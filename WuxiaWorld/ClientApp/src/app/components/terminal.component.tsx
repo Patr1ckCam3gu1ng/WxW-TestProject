@@ -6,10 +6,9 @@ import { AuthContext } from '../contexts/auth.context';
 import { ChapterContext } from '../contexts/chapter.context';
 import { NovelContext } from '../contexts/novel.context';
 
+import commands from '../services/command.service';
 import { authContext } from '../models/authContext.interface';
 import { CommonContext } from '../models/commonContext.inteface';
-
-import commands from '../services/command.service';
 
 const TerminalComponent = () => {
     // @ts-ignore

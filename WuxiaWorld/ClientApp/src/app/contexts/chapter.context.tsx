@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react';
-import { Chapter } from '../models/chapter.interface';
 import { chapterReducer } from '../reducers/chapter.reducer';
+import { Chapter } from '../models/chapter.interface';
 
 export const ChapterContext = createContext({});
 

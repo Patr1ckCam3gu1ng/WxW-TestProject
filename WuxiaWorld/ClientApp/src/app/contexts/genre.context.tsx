@@ -1,5 +1,4 @@
 import React, { createContext, useReducer } from 'react';
-
 import { genreReducer } from '../reducers/genreReducer';
 import { Inputbox } from '../models/inputbox';
 

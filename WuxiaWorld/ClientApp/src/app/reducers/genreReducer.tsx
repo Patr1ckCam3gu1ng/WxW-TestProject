@@ -1,7 +1,7 @@
-import { Commands, Inputbox } from '../models/inputbox';
-import { Action } from '../models/action.interface';
 import genreService from '../services/genre.service';
 import authService from '../services/auth.service';
+import { Commands, Inputbox } from '../models/inputbox';
+import { Action } from '../models/action.interface';
 
 export const genreReducer = (state: Inputbox, action: Action) => {
     const jwtToken = authService.jwtToken(action);

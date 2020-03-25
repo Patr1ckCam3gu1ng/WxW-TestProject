@@ -1,12 +1,13 @@
 import axios from 'axios';
 import common from '../common';
-import { UserAccount } from '../models/userAccount.interface';
-import { Genre } from '../models/genre.interface';
-import helper from '../services/throwError.service';
 import { Novel } from '../models/novel.interface';
 import { GenreNovel } from '../models/genreNovel.interface';
-import { ApiError } from '../models/apiError.interface';
 import { Chapter } from '../models/chapter.interface';
+import { Genre } from '../models/genre.interface';
+import { ApiError } from '../models/apiError.interface';
+import { UserAccount } from '../models/userAccount.interface';
+import helper from '../services/throwError.service';
+import { ChapterPublish } from '../models/chapterPublish.interface';
 
 const apiRootUrl = common.apiUrl();
 
@@ -48,6 +49,7 @@ export default {
             isUnAssign: boolean | null,
         ) => Promise<number | ApiError>;
         novelChapter: (authenticationHeader: string, chapter: Chapter) => Promise<Chapter>;
+        novelChapterPublish: (authenticationHeader: string, chapterPublish: ChapterPublish) => Promise<Chapter>;
         novels: (authenticationHeader: string, genreList: Novel[]) => Promise<Novel[]>;
     } {
         return {
@@ -97,6 +99,20 @@ export default {
                         .post(`${apiRootUrl}/novels/${chapter.novelId}/chapters`, chapter, {
                             headers: { Authorization: authenticationHeader },
                         })
+                        .then(value => value.data)
+                        .catch(error => helper.throwError(error));
+                })();
+            },
+            novelChapterPublish: (authenticationHeader: string, chapterPublish: ChapterPublish): Promise<Chapter> => {
+                return (async function(): Promise<Chapter> {
+                    return await axios
+                        .post(
+                            `${apiRootUrl}/novels/${chapterPublish.novelId}/chapters/${chapterPublish.number}/publish`,
+                            null,
+                            {
+                                headers: { Authorization: authenticationHeader },
+                            },
+                        )
                         .then(value => value.data)
                         .catch(error => helper.throwError(error));
                 })();

@@ -1,6 +1,6 @@
-import { Commands } from '../models/inputbox';
 import { Action, AuthAction } from '../models/action.interface';
 import { TerminalCommands } from '../models/command.interface';
+import { Commands } from '../models/inputbox';
 
 export default function(
     genreDispatch: any,
@@ -21,9 +21,19 @@ export default function(
                 return;
             },
         },
+        'publish-chapter': {
+            method: (args: any, print: any, runCommand: any) => {
+                chapterDispatch({
+                    type: Commands.ChapterPublish,
+                    inputValue: args._,
+                    print: print,
+                    runCommand: runCommand,
+                } as Action);
+                return;
+            },
+        },
         'assign-genre': {
             method: (args: any, print: any, runCommand: any) => {
-
                 genreDispatch({
                     type: Commands.GenreAssign,
                     inputValue: args._,

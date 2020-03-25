@@ -1,6 +1,6 @@
-import { AuthAction } from '../models/action.interface';
-import { Commands } from '../models/inputbox';
 import authService from '../services/auth.service';
+import { Commands } from '../models/inputbox';
+import { AuthAction } from '../models/action.interface';
 
 export const authReducer = (state: string, action: AuthAction): string => {
     switch (action.type) {

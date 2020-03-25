@@ -1,7 +1,6 @@
 import React, { createContext, useReducer } from 'react';
-
-import { Novel } from '../models/novel.interface';
 import { novelReducer } from '../reducers/novelReducer';
+import { Novel } from '../models/novel.interface';
 
 export const NovelContext = createContext({});
 

@@ -145,7 +145,7 @@
 
             if (cacheResult != null) {
 
-                return cacheResult is bool;
+                return true;
             }
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));

@@ -14,6 +14,8 @@
     using Microsoft.IdentityModel.Tokens;
 
     public class Authenticate : IAuthenticate {
+
+        private const string Admin = "admin";
         private readonly JwtToken _token;
 
         public Authenticate(IOptions<JwtToken> jwtToken) {
@@ -22,14 +24,17 @@
 
         public bool Validate(LoginModel login) {
 
-            return login.UserName == "admin" || login.UserName == "user";
+            const string user = "user";
+
+            return login.UserName == Admin && login.Password == Admin ||
+                   login.UserName == user && login.Password == user;
         }
 
         public string GenerateToken(string loginUserName) {
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_token.Key));
 
-            var isAdmin = loginUserName.ToLowerInvariant() == "admin";
+            var isAdmin = loginUserName.ToLowerInvariant() == Admin;
 
             var claimIdentities = new List<Claim> {new Claim(ClaimTypes.Role, isAdmin ? "Admin" : "User")};
 
@@ -43,4 +48,5 @@
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
+
 }
