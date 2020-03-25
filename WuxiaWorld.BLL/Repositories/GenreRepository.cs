@@ -17,6 +17,7 @@
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using Microsoft.Extensions.Options;
     using Microsoft.Extensions.Primitives;
 
@@ -46,7 +47,12 @@
 
             if (cacheResult != null) {
 
-                return _mapper.Map<List<IdNameModel>>(cacheResult);
+                if (cacheResult is List<object> cacheObjects) {
+
+                    var cacheGenreList = cacheObjects.Select(cache => cache as Genres).ToList();
+
+                    return _mapper.Map<List<IdNameModel>>(cacheGenreList);
+                }
             }
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
@@ -56,12 +62,12 @@
                     select genre).ToListAsync(ct.Token)
                 .ConfigureAwait(false);
 
-            var mappedGenre = _mapper.Map<List<IdNameModel>>(genres);
+            var genreObjects = genres.Cast<object>().ToList();
 
-            await _cache.CreateAsync(_pathValue, mappedGenre, new CancellationChangeToken(ct.Token))
+            await _cache.CreateAsync(_pathValue, genreObjects, new CancellationChangeToken(ct.Token))
                 .ConfigureAwait(false);
 
-            return mappedGenre;
+            return _mapper.Map<List<IdNameModel>>(genres);
         }
 
         // public async Task<Genres> GetByName(string genreName) {
@@ -159,24 +165,31 @@
             #endregion
         }
 
-        public async Task<Genres> Create(GenreModel genre) {
+        public async Task<List<GenreModel>> Create(GenreModel[] genres) {
 
-            var newGenre = _mapper.Map<Genres>(genre);
+            var newGenres = new List<GenreModel>();
 
-            await _dbContext.AddAsync(newGenre).ConfigureAwait(false);
+            foreach (var genre in genres) {
 
-            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+                var newGenre = _mapper.Map<Genres>(genre);
 
-            var result = await _dbContext
-                .SaveChangesAsync(ct.Token)
-                .ConfigureAwait(false);
+                await _dbContext.AddAsync(newGenre).ConfigureAwait(false);
 
-            if (result == 1) {
+                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                await _cache.UpsertAsync(_pathValue, newGenre.Id, newGenre, ct.Token);
+                var result = await _dbContext
+                    .SaveChangesAsync(ct.Token)
+                    .ConfigureAwait(false);
+
+                if (result == 1) {
+
+                    await _cache.UpsertAsync(_pathValue, newGenre.Id, newGenre, ct.Token);
+
+                    newGenres.Add(_mapper.Map<GenreModel>(newGenre));
+                }
             }
 
-            return result == 1 ? newGenre : null;
+            return newGenres;
         }
     }
 

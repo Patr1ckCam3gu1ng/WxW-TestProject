@@ -56,10 +56,10 @@
 
         [HttpPost]
         [TypeFilter(typeof(AdminOnlyActionFilter))]
-        public async Task<IActionResult> New([FromBody] GenreModel input) {
+        public async Task<IActionResult> New([FromBody] GenreModel[] genres) {
 
             try {
-                return Ok(await _genreService.Create(input));
+                return Ok(await _genreService.Create(genres));
             }
             catch (NoRecordFoundException) {
                 return NoContent();
@@ -73,6 +73,8 @@
             catch (Exception exception) {
                 return BadRequest(exception.Message);
             }
+
+            return BadRequest();
         }
     }
 

@@ -54,9 +54,13 @@
 
             var objectList = new List<object>();
 
-            if (GetCache(apiEndpointKeyValue) is List<object> cacheResult) {
+            var cacheResult = GetCache(apiEndpointKeyValue);
 
-                objectList.AddRange(cacheResult);
+            if (cacheResult != null) {
+
+                var cacheList = cacheResult as List<object>;
+
+                objectList.AddRange(cacheList);
             }
 
             objectList.Add(newRecord);

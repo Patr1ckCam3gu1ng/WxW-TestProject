@@ -16,11 +16,13 @@
             CreateMap<NovelModel, Novels>();
 
             CreateMap<GenreModel, Genres>();
+            CreateMap<Genres, GenreModel>();
 
             CreateMap<Genres, IdNameModel>();
 
             CreateMap<ChapterModel, Chapters>();
             CreateMap<Chapters, ChapterModel>();
+            CreateMap<IdNameModel, object>();
 
             CreateMap<Novels, NovelResult>()
                 .ForMember(c => c.Genres,

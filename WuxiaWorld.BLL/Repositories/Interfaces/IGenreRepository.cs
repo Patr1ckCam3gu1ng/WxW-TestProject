@@ -14,7 +14,7 @@
         // Task<Genres> GetByName(string genreName);
 
 
-        Task<Genres> Create(GenreModel genre);
+        Task<List<GenreModel>> Create(GenreModel[] genres);
 
 
         Task<List<Genres>> GetByIds(List<int> inputGenreIds);

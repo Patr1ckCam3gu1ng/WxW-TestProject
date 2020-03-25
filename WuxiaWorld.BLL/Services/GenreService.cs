@@ -45,11 +45,11 @@
         //     return result;
         // }
 
-        public async Task<Genres> Create(GenreModel genre) {
+        public async Task<List<GenreModel>> Create(GenreModel[] genres) {
 
             try {
 
-                var newGenre = await _genreRepository.Create(genre);
+                var newGenre = await _genreRepository.Create(genres);
 
                 if (newGenre == null) {
                     throw new FailedCreatingNewException("Failed creating new genre");
