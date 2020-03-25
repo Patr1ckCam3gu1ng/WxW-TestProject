@@ -10,6 +10,17 @@ export default function(
     setJwtToken: any,
 ) {
     return {
+        'chapter-content': {
+            method: (args: any, print: any, runCommand: any) => {
+                chapterDispatch({
+                    type: Commands.ChapterContent,
+                    inputValue: args._,
+                    print: print,
+                    runCommand: runCommand,
+                } as Action);
+                return;
+            },
+        },
         'assign-genre': {
             method: (args: any, print: any, runCommand: any) => {
                 genreDispatch({

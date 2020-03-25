@@ -26,12 +26,18 @@
         }
 
         [HttpGet]
-        [Route("{novelId}/chapters")]
-        public async Task<IActionResult> Get(int novelId) {
+        [Route("{novelId}/chapters/{chapterNumber}")]
+        public async Task<IActionResult> Get(int novelId, int chapterNumber,
+            [FromQuery(Name = "isIncludeContent")] bool? isIncludeContent) {
             try {
-                var novelChapter = await _chapterService.GetByNovelId(novelId);
+                var novelChapter = await _chapterService.GetByNovelId(novelId, chapterNumber, isIncludeContent);
 
-                return Ok(novelChapter);
+                if (isIncludeContent ?? false) {
+
+                    return Ok(novelChapter.WithContents);
+                }
+
+                return Ok(novelChapter.WithoutContents);
             }
             catch (FailedCreatingNewException exception) {
                 return BadRequest(exception.Message);

@@ -12,6 +12,7 @@ export class Commands {
     static NovelCreate = 'Novel_Create';
     static ChapterCreate = 'Chapter_Create';
     static ChapterPublish = 'Chapter_Publish';
+    static ChapterContent = 'Chapter_Content';
     static ChaptersByNovelId = 'Chapters_ByNovel';
     static Login = 'Login';
     static Logout = 'Logout';

@@ -13,7 +13,12 @@ const apiRootUrl = common.apiUrl();
 
 export default {
     get(): {
-        chapterByNovelId: (authenticationHeader: string, novelId: number) => Promise<Chapter[]>;
+        chapterByNovelId: (
+            authenticationHeader: string,
+            novelId: number,
+            chapterId: number,
+            isIncludeContent: boolean,
+        ) => Promise<Chapter[]>;
         genre: (authenticationHeader: string) => Promise<Genre[]>;
         genreByNovelId: (authenticationHeader: string, genreId: number) => Promise<Novel[]>;
         novels: (authenticationHeader: string) => Promise<Novel[]>;
@@ -41,12 +46,20 @@ export default {
                         });
                 })();
             },
-            chapterByNovelId: (authenticationHeader: string, novelId: number): Promise<Chapter[]> => {
+            chapterByNovelId: (
+                authenticationHeader: string,
+                novelId: number,
+                chapterId: number,
+                isIncludeContent: boolean,
+            ): Promise<Chapter[]> => {
                 return (async function(): Promise<Chapter[]> {
                     return await axios
-                        .get(`${apiRootUrl}/novels/${novelId}/chapters`, {
-                            headers: { Authorization: authenticationHeader },
-                        })
+                        .get(
+                            `${apiRootUrl}/novels/${novelId}/chapters/${chapterId}?&isIncludeContent=${isIncludeContent}`,
+                            {
+                                headers: { Authorization: authenticationHeader },
+                            },
+                        )
                         .then(value => {
                             return value.data;
                         });

@@ -68,9 +68,9 @@
             return result;
         }
 
-        public async Task<List<ChapterModel>> GetByNovelId(int novelId) {
+        public async Task<ChapterNovelResult> GetByNovelId(int novelId, int chapterNumber, bool? isIncludeContent) {
 
-            return await _chapterRepository.GetByNovelId(novelId).ConfigureAwait(false);
+            return await _chapterRepository.GetByNovelId(novelId, chapterNumber, isIncludeContent).ConfigureAwait(false);
         }
     }
 

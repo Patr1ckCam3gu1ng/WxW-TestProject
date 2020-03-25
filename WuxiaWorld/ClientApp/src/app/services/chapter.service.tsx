@@ -6,6 +6,52 @@ import { Action } from '../models/action.interface';
 import { Chapter } from '../models/chapter.interface';
 import errorHelper from '../services/throwError.service';
 
+function getApiChapterByNovelId(
+    jwtToken: string,
+    novelId: string,
+    chapterNumber: string,
+    action: Action,
+    isIncludeContent: boolean,
+) {
+    apis.get()
+        .chapterByNovelId(jwtToken, Number(novelId), Number(chapterNumber), isIncludeContent)
+        .then((chapters: Chapter[]) => {
+            if (chapters.length === 0) {
+                action.runCommand('clear');
+                action.print('No published chapter for this novel in the database ');
+                return;
+            }
+            action.runCommand('clear');
+
+            const NovelWithoutContent = (): any => {
+                action.print("Novel's Chapters:");
+                chapters.map(chapter => {
+                    action.print(`      Chapter Number: ${chapter.number}`);
+                    action.print(`      Chapter Title:  ${chapter.name}`);
+                    action.print(`      Published on:   ${chapter.chapterPublishDate}`);
+                    action.print('');
+                    return chapter;
+                });
+            };
+            const NovelWithContent = (): any => {
+                action.print("Chapter's Content:");
+                chapters.map(chapter => {
+                    action.print(`      Chapter Title:  ${chapter.name}`);
+                    action.print(`      Content:  ${chapter.content}`);
+                    action.print('');
+                    return chapter;
+                });
+            };
+
+            if (isIncludeContent) {
+                NovelWithContent();
+            } else {
+                NovelWithoutContent();
+            }
+        })
+        .catch(errorHelper.errorCode(action));
+}
+
 export default {
     create: (jwtToken: string, action: Action): void => {
         if (Array.isArray(action.inputValue) === true) {
@@ -78,26 +124,7 @@ export default {
                 if (chapterNovel[0] === 'novels' && chapterNovel[2] === 'chapters') {
                     const novelId = chapterNovel[1];
                     if (!isNaN(novelId as any)) {
-                        apis.get()
-                            .chapterByNovelId(jwtToken, Number(novelId))
-                            .then((chapters: Chapter[]) => {
-                                if (chapters.length === 0) {
-                                    action.runCommand('clear');
-                                    action.print('No published chapter for this novel in the database ');
-                                    return;
-                                }
-                                action.runCommand('clear');
-                                action.print("Novel's Chapters:");
-                                chapters.map(chapter => {
-                                    action.print(`      Id:             ${chapter.id}`);
-                                    action.print(`      Chapter Number: ${chapter.number}`);
-                                    action.print(`      Chapter Title:  ${chapter.name}`);
-                                    action.print(`      Published on:   ${chapter.chapterPublishDate}`);
-                                    action.print('');
-                                    return chapter;
-                                });
-                            })
-                            .catch(errorHelper.errorCode(action));
+                        getApiChapterByNovelId(jwtToken, novelId, '0', action, false);
                         return;
                     }
                 }
@@ -107,6 +134,27 @@ export default {
         setTimeout(() => {
             action.print(ErrorMessage.InvalidSyntax);
             action.print('list novels {novelId} chapters');
+        }, 100);
+        return;
+    },
+    chapterContents: (jwtToken: string, action: Action): void => {
+        if (Array.isArray(action.inputValue) === true) {
+            const chapterNovel = helper.splitQuoteString(action.inputValue) as string[];
+            if (chapterNovel.length === 4) {
+                if (chapterNovel[0] === 'novels' && chapterNovel[2] === 'chapter') {
+                    const novelId = chapterNovel[1];
+                    const chapterId = chapterNovel[3];
+                    if (!isNaN(novelId as any)) {
+                        getApiChapterByNovelId(jwtToken, novelId, chapterId, action, true);
+                        return;
+                    }
+                }
+            }
+        }
+        action.runCommand('clear');
+        setTimeout(() => {
+            action.print(ErrorMessage.InvalidSyntax);
+            action.print('chapter-content novels {novelId}');
         }, 100);
         return;
     },

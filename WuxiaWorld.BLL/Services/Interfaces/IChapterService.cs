@@ -14,7 +14,7 @@
         Task<Chapters> Publish(int novelId, int chapterNumber);
 
 
-        Task<List<ChapterModel>> GetByNovelId(int novelId);
+        Task<ChapterNovelResult> GetByNovelId(int novelId, int chapterNumber, bool? isIncludeContent);
     }
 
 }

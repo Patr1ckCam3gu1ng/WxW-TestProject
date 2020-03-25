@@ -4,7 +4,6 @@
 
     public class ChapterModel : IdNameModel {
         public int Number { get; set; }
-        public string Content { get; set; }
         public int NovelId { get; set; }
         public DateTime? ChapterPublishDate { get; set; }
     }

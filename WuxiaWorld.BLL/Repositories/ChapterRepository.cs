@@ -160,8 +160,7 @@
             return isAlreadyPublished;
         }
 
-
-        public async Task<List<ChapterModel>> GetByNovelId(int novelId) {
+        public async Task<ChapterNovelResult> GetByNovelId(int novelId, int chapterNumber, bool? isIncludeContent) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
@@ -173,16 +172,28 @@
 
                 if (cacheResult is List<Chapters> cacheChapters) {
 
-                    return cacheChapters.Select(cacheChapter => _mapper.Map<ChapterModel>(cacheChapter)).ToList();
+                    return new ChapterNovelResult {
+                        WithoutContents = cacheChapters.Select(cacheChapter => _mapper.Map<ChapterModel>(cacheChapter))
+                            .ToList()
+                    };
                 }
             }
 
             var result = await (
                 from chapter in _dbContext.Chapters
-                where  chapter.NovelId == novelId && chapter.ChapterPublishDate != null
+                where chapter.NovelId == novelId && chapter.ChapterPublishDate != null && chapter.ChapterNumber == (chapterNumber == 0 ? chapter.ChapterNumber : chapterNumber)
                 select chapter).ToListAsync(ct.Token).ConfigureAwait(false);
 
-            return _mapper.Map<List<ChapterModel>>(result);
+            if (isIncludeContent ?? false) {
+
+                return new ChapterNovelResult {
+                    WithContents = _mapper.Map<List<ChapterContentModel>>(result)
+                };
+            }
+
+            return new ChapterNovelResult {
+                WithoutContents = _mapper.Map<List<ChapterModel>>(result)
+            };
         }
     }
 

@@ -28,6 +28,8 @@
             CreateMap<Chapters, ChapterModel>().ForMember(c => c.Number,
                 f => f.MapFrom(c => c.ChapterNumber));
 
+            CreateMap<Chapters, ChapterContentModel>();
+
             CreateMap<IdNameModel, object>();
 
             CreateMap<Novels, NovelResult>()
