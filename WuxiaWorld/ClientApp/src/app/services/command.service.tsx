@@ -48,5 +48,13 @@ export default function(genreDispatch: any, authDispatch: any, setJwtToken: any)
                 }
             },
         },
+        logout: {
+            method: (args: any, print: any) => {
+                authDispatch({
+                    type: Commands.Logout,
+                    print: print,
+                } as AuthAction);
+            },
+        },
     } as TerminalCommands;
 }

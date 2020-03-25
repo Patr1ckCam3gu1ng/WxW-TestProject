@@ -1,11 +1,11 @@
 import React, { createContext, useReducer, useState, useEffect } from 'react';
-import { AuthReducer } from '../reducers/auth.reducer';
+import { authReducer } from '../reducers/authReducer';
 
 export const AuthContext = createContext({});
 
 const NovelContextProvider = (props: any): any => {
     const [jwtToken, setJwtToken] = useState('');
-    const [state, dispatch] = useReducer(AuthReducer, jwtToken);
+    const [state, dispatch] = useReducer(authReducer, jwtToken);
 
     useEffect(() => {
         localStorage.setItem('jwtToken', jwtToken);

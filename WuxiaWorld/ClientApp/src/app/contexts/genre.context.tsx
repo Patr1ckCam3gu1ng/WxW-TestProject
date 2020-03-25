@@ -1,12 +1,12 @@
 import React, { createContext, useReducer } from 'react';
 
-import { GenreReducer } from '../reducers/genre.reducer';
+import { genreReducer } from '../reducers/genreReducer';
 import { Inputbox } from '../models/inputbox';
 
 export const GenreContext = createContext({});
 
 const GenreContextProvider = (props: any): any => {
-    const [value, dispatch] = useReducer(GenreReducer, {
+    const [value, dispatch] = useReducer(genreReducer, {
         value: '',
     } as Inputbox);
 
