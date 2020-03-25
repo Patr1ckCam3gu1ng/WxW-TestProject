@@ -29,7 +29,7 @@
 
         public async Task<ChapterModel> Create(int novelId, ChapterModel input) {
 
-            var novelByChapterNumber = await _chapterRepository.GetByChapterNumber(novelId, input.ChapterNumber);
+            var novelByChapterNumber = await _chapterRepository.GetByChapterNumber(novelId, input.Number);
 
             // INFO: This means that the chapter number does not yet exists within the novel
             if (novelByChapterNumber == null) {

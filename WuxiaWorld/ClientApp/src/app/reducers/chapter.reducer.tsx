@@ -9,7 +9,8 @@ export const chapterReducer = (state: Chapter, action: Action) => {
     if (jwtToken !== '') {
         switch (action.type) {
             case Commands.ChapterCreate: {
-                chapterService.create(action);
+                chapterService.create(jwtToken, action);
+                return state;
             }
         }
     }

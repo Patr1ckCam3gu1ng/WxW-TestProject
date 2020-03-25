@@ -53,7 +53,7 @@ export default {
                 const genreList: Genre[] = [];
                 splitGenres.map(genre => {
                     genreList.push({
-                        name: genre.replace(/"/g, ''),
+                        name: genre,
                     } as Genre);
                     return genre;
                 });

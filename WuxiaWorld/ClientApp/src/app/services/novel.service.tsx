@@ -28,7 +28,7 @@ export default {
                 const novelList: Novel[] = [];
                 splitNovel.map(novel => {
                     novelList.push({
-                        name: novel.replace(/"/g, ''),
+                        name: novel,
                     } as Novel);
                     return novel;
                 });
