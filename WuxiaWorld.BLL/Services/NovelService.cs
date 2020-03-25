@@ -37,6 +37,11 @@
 
             return await _novelRepository.GetAll(novelId).ConfigureAwait(false);
         }
+
+        public async Task<List<NovelResult>> GetGenderId(int genreId) {
+
+            return await _novelRepository.GetByGenderId(genreId).ConfigureAwait(false);
+        }
     }
 
 }

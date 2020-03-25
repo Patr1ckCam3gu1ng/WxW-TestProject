@@ -19,10 +19,12 @@
     public class GenreController : Controller {
 
         private readonly IGenreService _genreService;
+        private readonly INovelService _novelService;
 
-        public GenreController(IGenreService genreService) {
+        public GenreController(IGenreService genreService, INovelService novelService) {
 
             _genreService = genreService ?? throw new ArgumentNullException(nameof(genreService));
+            _novelService = novelService ?? throw new ArgumentNullException(nameof(novelService));
         }
 
         [HttpGet]
@@ -39,20 +41,22 @@
             }
         }
 
-        // [HttpGet]
-        // [Route("{genreName}")]
-        // public async Task<IActionResult> Get(string genreName) {
-        //
-        //     try {
-        //         return Ok(await _genreService.GetByName(genreName));
-        //     }
-        //     catch (NoRecordFoundException) {
-        //         return NoContent();
-        //     }
-        //     catch {
-        //         return BadRequest(ExceptionError.Message);
-        //     }
-        // }
+        [HttpGet]
+        [Route("{genreId}/novels")]
+        public async Task<IActionResult> GetNovelsByGender(int genreId) {
+
+            try {
+                var result = await _novelService.GetGenderId(genreId).ConfigureAwait(false);
+
+                return Ok(result);
+            }
+            catch (NoRecordFoundException) {
+                return NoContent();
+            }
+            catch {
+                return BadRequest(ExceptionError.Message);
+            }
+        }
 
         [HttpPost]
         [TypeFilter(typeof(AdminOnlyActionFilter))]

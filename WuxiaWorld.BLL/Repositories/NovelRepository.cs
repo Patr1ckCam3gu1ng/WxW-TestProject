@@ -124,6 +124,38 @@
             throw new NoRecordFoundException("Novel not found");
         }
 
+
+        public async Task<List<NovelResult>> GetByGenderId(int genreId) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var query =
+                from novel in _dbContext.NovelGenres
+                    .Include(c => c.Novels)
+                    .Include(c => c.Genres)
+                    .Where(c => c.GenreId == genreId)
+                select novel;
+
+            var novels = await query.ToListAsync(ct.Token).ConfigureAwait(false);
+
+            if (novels != null) {
+
+                if (novels.Any()) {
+
+                    var novelResults = novels.Select(c => c.Novels).ToList();
+
+                    var mappedNovelResults = _mapper.Map<List<NovelResult>>(novelResults);
+
+                    await CacheNovels(mappedNovelResults, ct);
+
+                    return mappedNovelResults;
+
+                }
+            }
+
+            throw new NoRecordFoundException("Novel not found");
+        }
+
         #region Cache Management
 
         private bool GetNovelCache(int? novelId, out List<NovelResult> list) {

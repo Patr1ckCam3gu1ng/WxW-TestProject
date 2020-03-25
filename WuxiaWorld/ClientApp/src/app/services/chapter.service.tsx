@@ -4,18 +4,7 @@ import { ErrorMessage } from './throwError.service';
 import { ChapterPublish } from '../models/chapterPublish.interface';
 import { Action } from '../models/action.interface';
 import { Chapter } from '../models/chapter.interface';
-import { ApiError } from '../models/apiError.interface';
-
-function manageError(action: Action) {
-    return function(error: ApiError) {
-        if (error.code === 401) {
-            action.print(ErrorMessage.AdminRole);
-        }
-        if (error.code === 400) {
-            action.print(error.message);
-        }
-    };
-}
+import errorHelper from '../services/throwError.service';
 
 export default {
     create: (jwtToken: string, action: Action): void => {
@@ -40,7 +29,7 @@ export default {
                                 action.print('Success: Chapter successfully created for this novel');
                             }
                         })
-                        .catch(manageError(action));
+                        .catch(errorHelper.errorCode(action));
 
                     return;
                 }
@@ -70,7 +59,7 @@ export default {
                                 action.print('Success: Chapter successfully published');
                             }
                         })
-                        .catch(manageError(action));
+                        .catch(errorHelper.errorCode(action));
                     return;
                 }
             }
@@ -108,7 +97,7 @@ export default {
                                     return chapter;
                                 });
                             })
-                            .catch(manageError(action));
+                            .catch(errorHelper.errorCode(action));
                         return;
                     }
                 }

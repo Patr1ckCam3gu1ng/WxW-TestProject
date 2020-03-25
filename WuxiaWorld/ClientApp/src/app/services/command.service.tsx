@@ -10,28 +10,6 @@ export default function(
     setJwtToken: any,
 ) {
     return {
-        'create-chapter': {
-            method: (args: any, print: any, runCommand: any) => {
-                chapterDispatch({
-                    type: Commands.ChapterCreate,
-                    inputValue: args._,
-                    print: print,
-                    runCommand: runCommand,
-                } as Action);
-                return;
-            },
-        },
-        'publish': {
-            method: (args: any, print: any, runCommand: any) => {
-                chapterDispatch({
-                    type: Commands.ChapterPublish,
-                    inputValue: args._,
-                    print: print,
-                    runCommand: runCommand,
-                } as Action);
-                return;
-            },
-        },
         'assign-genre': {
             method: (args: any, print: any, runCommand: any) => {
                 genreDispatch({
@@ -54,13 +32,47 @@ export default function(
                 return;
             },
         },
+        'create-chapter': {
+            method: (args: any, print: any, runCommand: any) => {
+                chapterDispatch({
+                    type: Commands.ChapterCreate,
+                    inputValue: args._,
+                    print: print,
+                    runCommand: runCommand,
+                } as Action);
+                return;
+            },
+        },
+        publish: {
+            method: (args: any, print: any, runCommand: any) => {
+                chapterDispatch({
+                    type: Commands.ChapterPublish,
+                    inputValue: args._,
+                    print: print,
+                    runCommand: runCommand,
+                } as Action);
+                return;
+            },
+        },
         list: {
             method: (args: any, print: any, runCommand: any) => {
                 const inputValue = args._[0];
                 if (inputValue === 'genres') {
+                    const novelId = args._[1];
+                    if (typeof novelId === 'undefined') {
+                        genreDispatch({
+                            type: Commands.GenreList,
+                            inputValue: inputValue,
+                            print: print,
+                            runCommand: runCommand,
+                        } as Action);
+                        return;
+                    }
+                }
+                if (inputValue === 'genres') {
                     genreDispatch({
-                        type: Commands.GenreList,
-                        inputValue: inputValue,
+                        type: Commands.NovelsByGenreId,
+                        inputValue: args._,
                         print: print,
                         runCommand: runCommand,
                     } as Action);

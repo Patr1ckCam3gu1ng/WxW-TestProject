@@ -8,7 +8,7 @@ export const genreReducer = (state: Inputbox, action: Action) => {
     if (jwtToken !== '') {
         switch (action.type) {
             case Commands.GenreList: {
-                return genreService.list(jwtToken, action, state);
+                return genreService.list(action, jwtToken, state);
             }
             case Commands.GenreCreate: {
                 return genreService.create(action, jwtToken, state);
@@ -18,6 +18,9 @@ export const genreReducer = (state: Inputbox, action: Action) => {
             }
             case Commands.GenreRemove: {
                 return genreService.assign(action, jwtToken, state, true);
+            }
+            case Commands.NovelsByGenreId: {
+                return genreService.byNovelId(action, jwtToken, state);
             }
         }
     }

@@ -4,14 +4,12 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using DAL.Entities;
     using DAL.Models;
 
     using Exceptions;
 
     using Interfaces;
 
-    using Repositories;
     using Repositories.Interfaces;
 
     public class GenreService : IGenreService {

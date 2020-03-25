@@ -49,7 +49,7 @@
 
         [HttpPost]
         [Route("{novelId}/genre/{genreId}")]
-        public async Task<IActionResult> Publish(int novelId, int genreId) {
+        public async Task<IActionResult> AssignGenre(int novelId, int genreId) {
 
             try {
                 await _novelGenreService
@@ -62,6 +62,9 @@
                 return Ok();
             }
             catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (NovelGenreAlreadyExists exception) {
                 return BadRequest(exception.Message);
             }
             catch (OneOrMoreGenreNotFoundException exception) {

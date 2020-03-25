@@ -19,10 +19,12 @@
         public GenreControllerTest() {
 
             _mockGenreService = new Mock<IGenreService>();
-            _controller = new GenreController(_mockGenreService.Object);
+            _mockNovelService = new Mock<INovelService>();
+            _controller = new GenreController(_mockGenreService.Object, _mockNovelService.Object);
         }
 
-        private readonly Mock<IGenreService> _mockGenreService;
+        private readonly Mock<IGenreService> _mockGenreService; 
+        private readonly Mock<INovelService> _mockNovelService;
         private readonly GenreController _controller;
 
         // private TaskAwaiter<IActionResult> ControllerGetByName() {

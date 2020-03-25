@@ -2,7 +2,10 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+
+    using DAL.Models;
 
     using Exceptions;
 
@@ -27,10 +30,16 @@
 
         public async Task<bool> Assign(int novelId, List<int> genreIds) {
 
-            var novel = await _novelRepository.GetAll(novelId).ConfigureAwait(false);
+            var novels = await _novelRepository.GetAll(novelId).ConfigureAwait(false);
+            
+            if (novels == null) {
 
-            if (novel == null) {
                 throw new NoRecordFoundException("Novel not found");
+            }
+
+            if (IsNovelGenreAlreadyExists(genreIds, novels)) {
+
+                throw new NovelGenreAlreadyExists();
             }
 
             var genres = await _genreRepository.GetByIds(genreIds).ConfigureAwait(false);
@@ -42,6 +51,22 @@
             }
 
             throw new OneOrMoreGenreNotFoundException();
+
+            bool IsNovelGenreAlreadyExists(IReadOnlyCollection<int> genreIdList, IEnumerable<NovelResult> novelResults) {
+
+                foreach (var novel in novelResults) {
+
+                    foreach (var genre in novel.Genres) {
+
+                        if (genreIdList.Any(c => c == genre.Id)) {
+
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
         }
 
         public async Task UnAssign(int novelId, int genreId) {

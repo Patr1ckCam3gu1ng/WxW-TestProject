@@ -11,7 +11,8 @@
     }
 
     public class FailedCreatingNewException : ServiceException {
-        public FailedCreatingNewException(string message = "Failed creating new chapter for this chapter") : base(message) {
+        public FailedCreatingNewException(string message = "Failed creating new chapter for this chapter") :
+            base(message) {
         }
     }
 
@@ -48,6 +49,11 @@
 
     public class ChapterAlreadyPublished : ServiceException {
         public ChapterAlreadyPublished(string message) : base(message) {
+        }
+    }
+
+    public class NovelGenreAlreadyExists : ServiceException {
+        public NovelGenreAlreadyExists(string message = "Genre already assigned to this Novel") : base(message) {
         }
     }
 

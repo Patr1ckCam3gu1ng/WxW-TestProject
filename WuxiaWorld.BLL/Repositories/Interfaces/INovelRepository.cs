@@ -11,6 +11,9 @@
 
 
         Task<List<NovelResult>> GetAll(int? novelId = null);
+
+
+        Task<List<NovelResult>> GetByGenderId(int genreId);
     }
 
 }

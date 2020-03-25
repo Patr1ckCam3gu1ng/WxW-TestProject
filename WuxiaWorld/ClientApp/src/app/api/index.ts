@@ -13,9 +13,10 @@ const apiRootUrl = common.apiUrl();
 
 export default {
     get(): {
-        genre: (authenticationHeader: string) => Promise<Genre[]>;
-        novels: (authenticationHeader: string) => Promise<Novel[]>;
         chapterByNovelId: (authenticationHeader: string, novelId: number) => Promise<Chapter[]>;
+        genre: (authenticationHeader: string) => Promise<Genre[]>;
+        genreByNovelId: (authenticationHeader: string, genreId: number) => Promise<Novel[]>;
+        novels: (authenticationHeader: string) => Promise<Novel[]>;
     } {
         return {
             genre: (authenticationHeader: string): Promise<Genre[]> => {
@@ -44,6 +45,17 @@ export default {
                 return (async function(): Promise<Chapter[]> {
                     return await axios
                         .get(`${apiRootUrl}/novels/${novelId}/chapters`, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                        .then(value => {
+                            return value.data;
+                        });
+                })();
+            },
+            genreByNovelId: (authenticationHeader: string, genreId: number): Promise<Novel[]> => {
+                return (async function(): Promise<Novel[]> {
+                    return await axios
+                        .get(`${apiRootUrl}/genres/${genreId}/novels`, {
                             headers: { Authorization: authenticationHeader },
                         })
                         .then(value => {
@@ -91,7 +103,6 @@ export default {
                 isUnAssign: boolean | null,
             ): Promise<number | ApiError> => {
                 return (async function(): Promise<number | ApiError> {
-                    console.log(isUnAssign);
                     const unAssign = isUnAssign === null ? '' : '/unAssign';
                     return await axios
                         .post(

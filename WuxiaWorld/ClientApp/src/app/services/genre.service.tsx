@@ -1,11 +1,11 @@
-import { ErrorMessage } from './throwError.service';
+import errorHelper, { ErrorMessage } from './throwError.service';
 import helper from './splitString.service';
 import apis from '../api';
 import { GenreNovel } from '../models/genreNovel.interface';
 import { Genre } from '../models/genre.interface';
 import { Inputbox } from '../models/inputbox';
 import { Action } from '../models/action.interface';
-import { ApiError } from '../models/apiError.interface';
+import { Novel } from '../models/novel.interface';
 
 function getNovelGenreIds(splitNovelGenre: string[]): GenreNovel {
     let novelId: number | null = null;
@@ -27,7 +27,7 @@ function getNovelGenreIds(splitNovelGenre: string[]): GenreNovel {
 }
 
 export default {
-    list: (jwtToken: string, action: Action, state: Inputbox): Inputbox => {
+    list: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {
         apis.get()
             .genre(jwtToken)
             .then((genres: Genre[]) => {
@@ -42,6 +42,48 @@ export default {
                 return state;
             });
 
+        return state;
+    },
+    byNovelId: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {
+        if (Array.isArray(action.inputValue) === true) {
+            const splitInputs = helper.splitQuoteString(action.inputValue) as string[];
+            if (splitInputs.length > 0) {
+                console.log(splitInputs);
+                if (splitInputs.length === 3) {
+                    if (splitInputs[0] === 'genres' && splitInputs[2] === 'novels') {
+                        const genreId = splitInputs[1];
+                        if (!isNaN(genreId as any)) {
+                            apis.get()
+                                .genreByNovelId(jwtToken, Number(genreId))
+                                .then((genres: Novel[]) => {
+                                    if (genres.length === 0) {
+                                        action.print(
+                                            'Error: No novels that belongs to the genre were found in the database',
+                                        );
+                                        return;
+                                    }
+                                    action.runCommand('clear');
+                                    action.print('List of Novels that belong to the genre:');
+                                    genres.map(genre => {
+                                        action.print(`Id:        ${genre.id}`);
+                                        action.print(`Name:      ${genre.name}`);
+                                        action.print('');
+                                        return genre;
+                                    });
+                                    return state;
+                                })
+                                .catch(errorHelper.errorCode(action));
+                            return state;
+                        }
+                    }
+                }
+            }
+        }
+        action.runCommand('clear');
+        setTimeout(() => {
+            action.print(ErrorMessage.InvalidSyntax);
+            action.print('list genres {genreId} novels');
+        }, 100);
         return state;
     },
     create: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {
@@ -63,11 +105,7 @@ export default {
                                 action.print('Ok: Genre added to the database ');
                                 return genres;
                             })
-                            .catch(function(error: ApiError) {
-                                if (error.code === 401) {
-                                    action.print(ErrorMessage.AdminRole);
-                                }
-                            });
+                            .catch(errorHelper.errorCode(action));
                         return state;
                     }
                 }
@@ -93,14 +131,7 @@ export default {
                                 action.print('Success: Genre assigned to Novel');
                             }
                         })
-                        .catch(function(error: ApiError) {
-                            if (error.code === 401) {
-                                action.print(ErrorMessage.AdminRole);
-                            }
-                            if (error.code === 400) {
-                                action.print(error.message);
-                            }
-                        });
+                        .catch(errorHelper.errorCode(action));
                     return state;
                 }
             }

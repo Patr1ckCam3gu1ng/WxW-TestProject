@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using DAL.Entities;
     using DAL.Models;
 
     public interface IGenreService {
