@@ -3,18 +3,31 @@ import common from '../common';
 import { UserAccount } from '../models/userAccount.interface';
 import { Genre } from '../models/genre.interface';
 import helper from '../services/throwError.service';
+import { Novel } from '../models/novel.interface';
 
 const apiRootUrl = common.apiUrl();
 
 export default {
     get(): {
         genre: (authenticationHeader: string) => Promise<Genre[]>;
+        novels: (authenticationHeader: string) => Promise<Novel[]>;
     } {
         return {
             genre: (authenticationHeader: string): Promise<Genre[]> => {
                 return (async function(): Promise<Genre[]> {
                     return await axios
                         .get(`${apiRootUrl}/genres`, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                        .then(value => {
+                            return value.data;
+                        });
+                })();
+            },
+            novels: (authenticationHeader: string): Promise<Novel[]> => {
+                return (async function(): Promise<Novel[]> {
+                    return await axios
+                        .get(`${apiRootUrl}/novels`, {
                             headers: { Authorization: authenticationHeader },
                         })
                         .then(value => {

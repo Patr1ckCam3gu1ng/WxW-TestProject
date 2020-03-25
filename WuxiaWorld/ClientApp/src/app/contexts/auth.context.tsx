@@ -3,7 +3,7 @@ import { authReducer } from '../reducers/authReducer';
 
 export const AuthContext = createContext({});
 
-const NovelContextProvider = (props: any): any => {
+const AuthContextProvider = (props: any): any => {
     const [jwtToken, setJwtToken] = useState('');
     const [state, dispatch] = useReducer(authReducer, jwtToken);
 
@@ -16,4 +16,4 @@ const NovelContextProvider = (props: any): any => {
     );
 };
 
-export default NovelContextProvider;
+export default AuthContextProvider;

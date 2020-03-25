@@ -1,6 +1,4 @@
 export interface Novel {
-    novelId: number;
-    name: number;
-    synopsis: number;
-    timeCreated: number;
+    id: number;
+    name: string;
 }

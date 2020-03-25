@@ -2,6 +2,7 @@ export interface Action {
     type: string;
     inputValue: string;
     print: any;
+    runCommand: any;
 }
 
 export interface AuthAction {

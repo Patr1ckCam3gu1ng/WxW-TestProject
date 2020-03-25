@@ -124,10 +124,10 @@
 
                 if (cacheResult != null) {
 
-                    var result = _mapper.Map<List<NovelResult>>(cacheResult);
+                    var cacheResultMapped = cacheResult as List<NovelResult>;
 
                     {
-                        list = result;
+                        list = cacheResultMapped;
                         return true;
                     }
                 }

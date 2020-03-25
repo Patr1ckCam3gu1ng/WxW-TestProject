@@ -10,13 +10,15 @@ export default {
         apis.get()
             .genre(jwtToken)
             .then((genres: Genre[]) => {
+                action.runCommand('clear');
                 action.print('List of Genres:');
                 genres.map(genre => {
-                    action.print(genre.name);
+                    action.print(`      ${genre.name}`);
                     return genre;
                 });
                 return state;
             });
+
         return state;
     },
     create: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {

@@ -4,6 +4,7 @@ export interface Inputbox {
 
 export class Commands {
     static GenreList = 'Genre_List';
+    static NovelList = 'Novel_List';
     static GenreCreate = 'Genre_Create';
     static ChapterCreate = 'Chapter_Create';
     static Login = 'Login';
