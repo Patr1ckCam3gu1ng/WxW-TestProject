@@ -57,10 +57,10 @@
 
                 var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
 
-                if (result > 0) {
-
-                    await _cache.UpsertAsync(_pathValue, newNovel.Id, newNovel, ct.Token);
-                }
+                // if (result > 0) {
+                //
+                //     await _cache.UpsertAsync(_pathValue, newNovel.Id, newNovel, ct.Token);
+                // }
 
                 if (result == 1) {
 

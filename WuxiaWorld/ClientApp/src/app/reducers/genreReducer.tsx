@@ -13,6 +13,9 @@ export const genreReducer = (state: Inputbox, action: Action) => {
             case Commands.GenreCreate: {
                 return genreService.create(action, jwtToken, state);
             }
+            case Commands.GenreAssign: {
+                return genreService.assign(action, jwtToken, state);
+            }
         }
     }
 

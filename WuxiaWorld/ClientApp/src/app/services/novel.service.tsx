@@ -11,11 +11,11 @@ export default {
             .novels(jwtToken)
             .then((novels: Novel[]) => {
                 action.runCommand('clear');
-                action.print('List of published Novels:');
+                action.print('List of Published Novels:');
                 novels.map(novel => {
                     action.print(`      Id: ${novel.id}`);
                     action.print(`      Name: ${novel.name}`);
-                    action.print('      ---');
+                    action.print('');
                     return novel;
                 });
             });

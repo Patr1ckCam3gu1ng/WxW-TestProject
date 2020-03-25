@@ -10,6 +10,17 @@ export default function(
     setJwtToken: any,
 ) {
     return {
+        'assign-genre': {
+            method: (args: any, print: any, runCommand: any) => {
+                genreDispatch({
+                    type: Commands.GenreAssign,
+                    inputValue: args._,
+                    print: print,
+                    runCommand: runCommand,
+                } as Action);
+                return;
+            },
+        },
         list: {
             method: (args: any, print: any, runCommand: any) => {
                 const inputValue = args._[0];

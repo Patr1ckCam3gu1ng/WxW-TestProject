@@ -4,6 +4,8 @@ import { UserAccount } from '../models/userAccount.interface';
 import { Genre } from '../models/genre.interface';
 import helper from '../services/throwError.service';
 import { Novel } from '../models/novel.interface';
+import { GenreNovel } from '../models/genreNovel.interface';
+import { ApiError } from '../models/apiError.interface';
 
 const apiRootUrl = common.apiUrl();
 
@@ -40,6 +42,7 @@ export default {
     post(): {
         genre: (authenticationHeader: string, genreList: Genre[]) => Promise<Genre[]>;
         novels: (authenticationHeader: string, genreList: Novel[]) => Promise<Novel[]>;
+        novelGenre: (authenticationHeader: string, genreNovel: GenreNovel) => Promise<number | ApiError>;
     } {
         return {
             genre: (authenticationHeader: string, genreList: Genre[]): Promise<Genre[]> => {
@@ -59,6 +62,16 @@ export default {
                             headers: { Authorization: authenticationHeader },
                         })
                         .then(value => value.data)
+                        .catch(error => helper.throwError(error));
+                })();
+            },
+            novelGenre: (authenticationHeader: string, genreNovel: GenreNovel): Promise<number | ApiError> => {
+                return (async function(): Promise<number | ApiError> {
+                    return await axios
+                        .post(`${apiRootUrl}/novels/${genreNovel.novelId}/genre/${genreNovel.genreId}`, genreNovel, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                        .then(response => response.status)
                         .catch(error => helper.throwError(error));
                 })();
             },

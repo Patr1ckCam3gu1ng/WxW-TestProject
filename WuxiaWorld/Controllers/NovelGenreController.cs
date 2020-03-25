@@ -1,13 +1,12 @@
 ﻿namespace WuxiaWorld.Controllers {
 
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using BLL.ActionFilters;
     using BLL.Exceptions;
     using BLL.Services.Interfaces;
-
-    using DAL.Models;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -27,12 +26,15 @@
         }
 
         [HttpPost]
-        [Route("{novelId}/genre")]
-        public async Task<IActionResult> Publish(int novelId, [FromBody] NovelGenreModel input) {
+        [Route("{novelId}/genre/{genreId}")]
+        public async Task<IActionResult> Publish(int novelId, int genreId) {
 
             try {
                 await _novelGenreService
-                    .Assign(novelId, input.GenreIds)
+                    .Assign(novelId,
+                        new List<int> {
+                            genreId
+                        })
                     .ConfigureAwait(false);
 
                 return Ok();
