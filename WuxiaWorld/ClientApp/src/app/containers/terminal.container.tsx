@@ -4,7 +4,7 @@ import CommandInputBox from '../components/terminal.component';
 import GenreContextProvider from '../contexts/genre.context';
 import AuthContextProvider from '../contexts/auth.context';
 
-function NovelContainer() {
+function TerminalContainer() {
     return (
         <AuthContextProvider>
             <GenreContextProvider>
@@ -14,4 +14,4 @@ function NovelContainer() {
     );
 }
 
-export default NovelContainer;
+export default TerminalContainer;

@@ -9,7 +9,6 @@ const apiRootUrl = common.apiUrl();
 export default {
     get(): {
         genre: (authenticationHeader: string) => Promise<Genre[]>;
-        // novel: (authenticationHeader: string, commandType: string) => Promise<Novel[]>;
     } {
         return {
             genre: (authenticationHeader: string): Promise<Genre[]> => {
@@ -23,15 +22,22 @@ export default {
                         });
                 })();
             },
-            // novel: (authenticationHeader: string, commandType: string): Promise<Novel[]> => {
-            //     return (async function (): Promise<Novel[]> {
-            //         return (
-            //             await axios.get(`${apiRootUrl}/${commandType}`, {
-            //                 headers: { Authorization: authenticationHeader },
-            //             })
-            //         ).data;
-            //     })().then(data => data);
-            // },
+        };
+    },
+    post(): {
+        genre: (authenticationHeader: string, genreList: Genre[]) => Promise<Genre[]>;
+    } {
+        return {
+            genre: (authenticationHeader: string, genreList: Genre[]): Promise<Genre[]> => {
+                return (async function(): Promise<Genre[]> {
+                    return await axios
+                        .post(`${apiRootUrl}/genres`, genreList, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                        .then(value => value.data)
+                        .catch(error => helper.throwError(error));
+                })();
+            },
         };
     },
     auth(): { login: (userAccount: UserAccount) => Promise<any> } {
@@ -41,9 +47,7 @@ export default {
                     return await axios
                         .post(`${apiRootUrl}/login`, userAccount)
                         .then(data => data)
-                        .catch(error => {
-                            helper.throwError(error);
-                        });
+                        .catch(error => helper.throwError(error));
                 })();
             },
         };

@@ -7,7 +7,7 @@ import commands from '../services/command.service';
 
 const TerminalComponent = () => {
     // @ts-ignore
-    const { dispatch: novelDispatch } = useContext(GenreContext);
+    const { dispatch: genreDispatch } = useContext(GenreContext);
     const { setJwtToken, dispatch: authDispatch } = useContext(AuthContext) as authContext;
 
     return (
@@ -24,7 +24,7 @@ const TerminalComponent = () => {
                 backgroundColor="black"
                 barColor="black"
                 style={{ fontWeight: 'bold', fontSize: '1em' }}
-                commands={commands(novelDispatch, authDispatch, setJwtToken)}
+                commands={commands(genreDispatch, authDispatch, setJwtToken)}
                 msg={'Welcome to WuxiaWold. Enter command to begin:'}
                 allowTabs={false}
             />

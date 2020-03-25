@@ -12,7 +12,7 @@ const NovelContextProvider = (props: any): any => {
     });
 
     return (
-        <AuthContext.Provider value={{ jwtToken, setJwtToken, dispatch }}>{props.children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ state, jwtToken, setJwtToken, dispatch }}>{props.children}</AuthContext.Provider>
     );
 };
 

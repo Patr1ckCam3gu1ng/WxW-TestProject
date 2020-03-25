@@ -2,15 +2,29 @@ import { Commands } from '../models/inputbox';
 import { Action, AuthAction } from '../models/action.interface';
 import { TerminalCommands } from '../models/command.interface';
 
-export default function(novelDispatch: any, authDispatch: any, setJwtToken: any) {
+export default function(genreDispatch: any, authDispatch: any, setJwtToken: any) {
     return {
         list: {
             method: (args: any, print: any) => {
                 const inputValue = args._[0];
                 if (inputValue === 'genres') {
-                    novelDispatch({
-                        type: Commands.SendCommand,
+                    genreDispatch({
+                        type: Commands.GenreList,
                         inputValue: inputValue,
+                        print: print,
+                    } as Action);
+                } else {
+                    print('Command not valid');
+                }
+            },
+        },
+        create: {
+            method: (args: any, print: any) => {
+                // const inputValue = args._[0];
+                if (args._[0] === 'genres') {
+                    genreDispatch({
+                        type: Commands.GenreCreate,
+                        inputValue: args._.filter((value: string, index: number) => index > 0),
                         print: print,
                     } as Action);
                 } else {

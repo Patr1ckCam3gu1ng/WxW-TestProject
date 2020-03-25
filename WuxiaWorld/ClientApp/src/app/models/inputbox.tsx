@@ -3,6 +3,7 @@ export interface Inputbox {
 }
 
 export class Commands {
-    static SendCommand = 'Send_Command';
+    static GenreList = 'Genre_List';
+    static GenreCreate = 'Genre_Create';
     static Login = 'Login';
 }
