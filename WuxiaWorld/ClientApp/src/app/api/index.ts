@@ -15,6 +15,7 @@ export default {
     get(): {
         genre: (authenticationHeader: string) => Promise<Genre[]>;
         novels: (authenticationHeader: string) => Promise<Novel[]>;
+        chapterByNovelId: (authenticationHeader: string, novelId: number) => Promise<Chapter[]>;
     } {
         return {
             genre: (authenticationHeader: string): Promise<Genre[]> => {
@@ -32,6 +33,17 @@ export default {
                 return (async function(): Promise<Novel[]> {
                     return await axios
                         .get(`${apiRootUrl}/novels`, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                        .then(value => {
+                            return value.data;
+                        });
+                })();
+            },
+            chapterByNovelId: (authenticationHeader: string, novelId: number): Promise<Chapter[]> => {
+                return (async function(): Promise<Chapter[]> {
+                    return await axios
+                        .get(`${apiRootUrl}/novels/${novelId}/chapters`, {
                             headers: { Authorization: authenticationHeader },
                         })
                         .then(value => {

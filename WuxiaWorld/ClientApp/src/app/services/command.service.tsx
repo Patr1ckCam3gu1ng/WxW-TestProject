@@ -21,7 +21,7 @@ export default function(
                 return;
             },
         },
-        'publish-chapter': {
+        'publish': {
             method: (args: any, print: any, runCommand: any) => {
                 chapterDispatch({
                     type: Commands.ChapterPublish,
@@ -67,8 +67,20 @@ export default function(
                     return;
                 }
                 if (inputValue === 'novels') {
-                    novelDispatch({
-                        type: Commands.NovelList,
+                    const novelId = args._[1];
+                    if (typeof novelId === 'undefined') {
+                        novelDispatch({
+                            type: Commands.NovelList,
+                            print: print,
+                            runCommand: runCommand,
+                        } as Action);
+                        return;
+                    }
+                }
+                if (inputValue === 'novels') {
+                    chapterDispatch({
+                        type: Commands.ChaptersByNovelId,
+                        inputValue: args._,
                         print: print,
                         runCommand: runCommand,
                     } as Action);

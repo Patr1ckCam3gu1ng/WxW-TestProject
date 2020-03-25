@@ -1,6 +1,7 @@
 ﻿namespace WuxiaWorld.BLL.Services {
 
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using AutoMapper;
@@ -17,8 +18,8 @@
     public class ChapterService : IChapterService {
 
         private readonly IChapterRepository _chapterRepository;
-        private readonly INovelService _novelService;
         private readonly IMapper _mapper;
+        private readonly INovelService _novelService;
 
         public ChapterService(IChapterRepository chapterRepository, INovelService novelService, IMapper mapper) {
 
@@ -51,7 +52,8 @@
 
         public async Task<Chapters> Publish(int novelId, int chapterNumber) {
 
-            var isAlreadyPublished = await _chapterRepository.IsAlreadyPublished(novelId, chapterNumber).ConfigureAwait(false);
+            var isAlreadyPublished =
+                await _chapterRepository.IsAlreadyPublished(novelId, chapterNumber).ConfigureAwait(false);
 
             if (isAlreadyPublished) {
                 throw new ChapterAlreadyPublished("Chapter is already published");
@@ -64,6 +66,11 @@
             }
 
             return result;
+        }
+
+        public async Task<List<ChapterModel>> GetByNovelId(int novelId) {
+
+            return await _chapterRepository.GetByNovelId(novelId).ConfigureAwait(false);
         }
     }
 

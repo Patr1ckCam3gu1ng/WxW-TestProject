@@ -16,6 +16,10 @@ export const chapterReducer = (state: Chapter, action: Action) => {
                 chapterService.publish(jwtToken, action);
                 return state;
             }
+            case Commands.ChaptersByNovelId: {
+                chapterService.chapterByNovelId(jwtToken, action);
+                return state;
+            }
         }
     }
     return state;

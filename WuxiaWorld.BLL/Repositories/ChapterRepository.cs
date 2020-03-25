@@ -84,7 +84,7 @@
                     }
                 }
 
-                return new List<Chapters>() {
+                return new List<Chapters> {
                     novelChapter
                 };
             }
@@ -158,6 +158,31 @@
                 .ConfigureAwait(false);
 
             return isAlreadyPublished;
+        }
+
+
+        public async Task<List<ChapterModel>> GetByNovelId(int novelId) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            var apiEndpoint = $"{_pathValue}";
+
+            var cacheResult = _cache.GetCache(apiEndpoint);
+
+            if (cacheResult != null) {
+
+                if (cacheResult is List<Chapters> cacheChapters) {
+
+                    return cacheChapters.Select(cacheChapter => _mapper.Map<ChapterModel>(cacheChapter)).ToList();
+                }
+            }
+
+            var result = await (
+                from chapter in _dbContext.Chapters
+                where  chapter.NovelId == novelId && chapter.ChapterPublishDate != null
+                select chapter).ToListAsync(ct.Token).ConfigureAwait(false);
+
+            return _mapper.Map<List<ChapterModel>>(result);
         }
     }
 

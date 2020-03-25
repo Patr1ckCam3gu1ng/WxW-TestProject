@@ -1,5 +1,6 @@
 ﻿namespace WuxiaWorld.BLL.Repositories.Interfaces {
 
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using DAL.Entities;
@@ -17,6 +18,9 @@
 
 
         Task<bool> IsAlreadyPublished(int novelId, int chapterNumber);
+
+
+        Task<List<ChapterModel>> GetByNovelId(int novelId);
     }
 
 }

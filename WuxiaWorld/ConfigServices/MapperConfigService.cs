@@ -11,6 +11,7 @@
     using Microsoft.Extensions.DependencyInjection;
 
     public class MapperProfile : Profile {
+
         public MapperProfile() {
 
             CreateMap<NovelModel, Novels>();
@@ -24,7 +25,9 @@
                 .ForMember(c => c.ChapterNumber,
                     f => f.MapFrom(c => c.Number));
 
-            CreateMap<Chapters, ChapterModel>();
+            CreateMap<Chapters, ChapterModel>().ForMember(c => c.Number,
+                f => f.MapFrom(c => c.ChapterNumber));
+
             CreateMap<IdNameModel, object>();
 
             CreateMap<Novels, NovelResult>()

@@ -6,6 +6,17 @@ import { Action } from '../models/action.interface';
 import { Chapter } from '../models/chapter.interface';
 import { ApiError } from '../models/apiError.interface';
 
+function manageError(action: Action) {
+    return function(error: ApiError) {
+        if (error.code === 401) {
+            action.print(ErrorMessage.AdminRole);
+        }
+        if (error.code === 400) {
+            action.print(error.message);
+        }
+    };
+}
+
 export default {
     create: (jwtToken: string, action: Action): void => {
         if (Array.isArray(action.inputValue) === true) {
@@ -29,14 +40,7 @@ export default {
                                 action.print('Success: Chapter successfully created for this novel');
                             }
                         })
-                        .catch(function(error: ApiError) {
-                            if (error.code === 401) {
-                                action.print(ErrorMessage.AdminRole);
-                            }
-                            if (error.code === 400) {
-                                action.print(error.message);
-                            }
-                        });
+                        .catch(manageError(action));
 
                     return;
                 }
@@ -52,8 +56,8 @@ export default {
     publish: (jwtToken: string, action: Action): void => {
         if (Array.isArray(action.inputValue) === true) {
             const splitChapterPublishInputs = helper.splitQuoteString(action.inputValue) as string[];
-            if (splitChapterPublishInputs.length === 2) {
-                const chapterNumber = splitChapterPublishInputs[0];
+            if (splitChapterPublishInputs.length === 4) {
+                const chapterNumber = splitChapterPublishInputs[3];
                 const novelId = splitChapterPublishInputs[1];
                 if (!isNaN(chapterNumber as any) && !isNaN(novelId as any)) {
                     apis.post()
@@ -66,14 +70,7 @@ export default {
                                 action.print('Success: Chapter successfully published');
                             }
                         })
-                        .catch(function(error: ApiError) {
-                            if (error.code === 401) {
-                                action.print(ErrorMessage.AdminRole);
-                            }
-                            if (error.code === 400) {
-                                action.print(error.message);
-                            }
-                        });
+                        .catch(manageError(action));
                     return;
                 }
             }
@@ -81,7 +78,46 @@ export default {
         action.runCommand('clear');
         setTimeout(() => {
             action.print(ErrorMessage.InvalidSyntax);
-            action.print('publish-chapter {chapterNumber} {novelId}');
+            action.print('publish novels {novelId} chapters {chapterNumber}');
+        }, 100);
+        return;
+    },
+    chapterByNovelId: (jwtToken: string, action: Action): void => {
+        if (Array.isArray(action.inputValue) === true) {
+            const chapterNovel = helper.splitQuoteString(action.inputValue) as string[];
+            if (chapterNovel.length === 3) {
+                if (chapterNovel[0] === 'novels' && chapterNovel[2] === 'chapters') {
+                    const novelId = chapterNovel[1];
+                    if (!isNaN(novelId as any)) {
+                        apis.get()
+                            .chapterByNovelId(jwtToken, Number(novelId))
+                            .then((chapters: Chapter[]) => {
+                                if (chapters.length === 0) {
+                                    action.runCommand('clear');
+                                    action.print('No published chapter for this novel in the database ');
+                                    return;
+                                }
+                                action.runCommand('clear');
+                                action.print("Novel's Chapters:");
+                                chapters.map(chapter => {
+                                    action.print(`      Id:             ${chapter.id}`);
+                                    action.print(`      Chapter Number: ${chapter.number}`);
+                                    action.print(`      Chapter Title:  ${chapter.name}`);
+                                    action.print(`      Published on:   ${chapter.chapterPublishDate}`);
+                                    action.print('');
+                                    return chapter;
+                                });
+                            })
+                            .catch(manageError(action));
+                        return;
+                    }
+                }
+            }
+        }
+        action.runCommand('clear');
+        setTimeout(() => {
+            action.print(ErrorMessage.InvalidSyntax);
+            action.print('list novels {novelId} chapters');
         }, 100);
         return;
     },

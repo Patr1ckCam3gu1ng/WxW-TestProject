@@ -1,5 +1,6 @@
 ﻿namespace WuxiaWorld.BLL.Services.Interfaces {
 
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using DAL.Entities;
@@ -11,6 +12,9 @@
 
 
         Task<Chapters> Publish(int novelId, int chapterNumber);
+
+
+        Task<List<ChapterModel>> GetByNovelId(int novelId);
     }
 
 }

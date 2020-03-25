@@ -25,6 +25,28 @@
             _chapterService = chapterService ?? throw new ArgumentNullException(nameof(chapterService));
         }
 
+        [HttpGet]
+        [Route("{novelId}/chapters")]
+        public async Task<IActionResult> Get(int novelId) {
+            try {
+                var novelChapter = await _chapterService.GetByNovelId(novelId);
+
+                return Ok(novelChapter);
+            }
+            catch (FailedCreatingNewException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (NovelChapterNumberExistsException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
+            }
+            catch (Exception exception) {
+                return BadRequest(exception.Message);
+            }
+        }
+
         [HttpPost]
         [Route("{novelId}/chapters")]
         public async Task<IActionResult> New([FromBody] ChapterModel input, int novelId) {
