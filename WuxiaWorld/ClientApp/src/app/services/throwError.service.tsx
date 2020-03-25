@@ -9,3 +9,7 @@ export default {
         } as ApiError);
     },
 };
+
+export class ErrorMessage {
+    static AdminRole = 'Error: The admin user is the only one who can write to the repo.';
+}

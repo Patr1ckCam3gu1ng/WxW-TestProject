@@ -39,12 +39,23 @@ export default {
     },
     post(): {
         genre: (authenticationHeader: string, genreList: Genre[]) => Promise<Genre[]>;
+        novels: (authenticationHeader: string, genreList: Novel[]) => Promise<Novel[]>;
     } {
         return {
             genre: (authenticationHeader: string, genreList: Genre[]): Promise<Genre[]> => {
                 return (async function(): Promise<Genre[]> {
                     return await axios
                         .post(`${apiRootUrl}/genres`, genreList, {
+                            headers: { Authorization: authenticationHeader },
+                        })
+                        .then(value => value.data)
+                        .catch(error => helper.throwError(error));
+                })();
+            },
+            novels: (authenticationHeader: string, genreList: Novel[]): Promise<Novel[]> => {
+                return (async function(): Promise<Novel[]> {
+                    return await axios
+                        .post(`${apiRootUrl}/novels`, genreList, {
                             headers: { Authorization: authenticationHeader },
                         })
                         .then(value => value.data)

@@ -7,7 +7,7 @@
 
     public interface INovelRepository {
 
-        Task<NovelResult> Create(NovelModel input);
+        Task<List<NovelResult>> Create(NovelModel[] novels);
 
 
         Task<List<NovelResult>> GetAll(int? novelId = null);

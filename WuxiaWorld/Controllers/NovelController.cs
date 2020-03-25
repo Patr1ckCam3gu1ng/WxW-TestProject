@@ -46,10 +46,10 @@
 
         [HttpPost]
         [TypeFilter(typeof(AdminOnlyActionFilter))]
-        public async Task<IActionResult> New([FromBody] NovelModel input) {
+        public async Task<IActionResult> New([FromBody] NovelModel[] novels) {
 
             try {
-                return Ok(await _novelService.Create(input));
+                return Ok(await _novelService.Create(novels));
             }
             catch (FailedCreatingNewException exception) {
                 return BadRequest(exception.Message);

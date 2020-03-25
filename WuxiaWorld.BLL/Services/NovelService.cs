@@ -21,16 +21,16 @@
             _novelRepository = novelRepository ?? throw new ArgumentNullException(nameof(novelRepository));
         }
 
-        public async Task<NovelResult> Create(NovelModel input) {
+        public async Task<List<NovelResult>> Create(NovelModel[] novels) {
 
-            var newNovel = await _novelRepository.Create(input).ConfigureAwait(false);
+            var newNovels = await _novelRepository.Create(novels).ConfigureAwait(false);
 
-            if (newNovel == null) {
+            if (newNovels == null) {
 
                 throw new FailedCreatingNewException("Failed creating new novel");
             }
 
-            return newNovel;
+            return newNovels;
         }
 
         public async Task<List<NovelResult>> GetAll(int? novelId) {

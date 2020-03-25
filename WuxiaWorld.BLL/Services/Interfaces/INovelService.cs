@@ -7,7 +7,7 @@
 
     public interface INovelService {
 
-        Task<NovelResult> Create(NovelModel input);
+        Task<List<NovelResult>> Create(NovelModel[] novels);
 
 
         Task<List<NovelResult>> GetAll(int? novelId = null);

@@ -18,7 +18,7 @@ export default function(
                         type: Commands.GenreList,
                         inputValue: inputValue,
                         print: print,
-                        runCommand: runCommand
+                        runCommand: runCommand,
                     } as Action);
                     return;
                 }
@@ -43,6 +43,15 @@ export default function(
                         inputValue: args._.filter((value: string, index: number) => index > 0),
                         print: print,
                     } as Action);
+                    return;
+                }
+                if (args._[0] === 'novels') {
+                    novelDispatch({
+                        type: Commands.NovelCreate,
+                        inputValue: args._.filter((value: string, index: number) => index > 0),
+                        print: print,
+                    } as Action);
+                    return;
                 }
                 if (args._[0] === 'chapter') {
                     chapterDispatch({
@@ -50,8 +59,9 @@ export default function(
                         print: print,
                         runCommand: runCommand,
                     } as Action);
+                    return;
                 } else {
-                    print('Command not valid');
+                    print('Command not valid xx');
                 }
             },
         },

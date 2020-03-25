@@ -4,6 +4,7 @@ import helper from './splitString.service';
 import { Genre } from '../models/genre.interface';
 import apis from '../api';
 import { ApiError } from '../models/apiError.interface';
+import { ErrorMessage } from './throwError.service';
 
 export default {
     list: (jwtToken: string, action: Action, state: Inputbox): Inputbox => {
@@ -23,10 +24,10 @@ export default {
     },
     create: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {
         if (Array.isArray(action.inputValue) === true) {
-            const splitGenre = helper.splitQuoteString(action.inputValue) as string[];
-            if (splitGenre.length > 0) {
+            const splitGenres = helper.splitQuoteString(action.inputValue) as string[];
+            if (splitGenres.length > 0) {
                 const genreList: Genre[] = [];
-                splitGenre.map(genre => {
+                splitGenres.map(genre => {
                     genreList.push({
                         name: genre.replace(/"/g, ''),
                     } as Genre);
@@ -38,12 +39,11 @@ export default {
                             .genre(jwtToken, genreList)
                             .then((genres: Genre[]) => {
                                 action.print('Ok: Genre added to the database ');
-                                console.log(genres);
                                 return genres;
                             })
                             .catch(function(error: ApiError) {
                                 if (error.code === 401) {
-                                    action.print('Error: The admin user is the only one who can write to the repo.');
+                                    action.print(ErrorMessage.AdminRole);
                                 }
                             });
                         return state;

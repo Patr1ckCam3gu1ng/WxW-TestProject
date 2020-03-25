@@ -41,24 +41,34 @@
             _cancelTokenFromSeconds = cancelToken.Value.FromSeconds;
         }
 
-        public async Task<NovelResult> Create(NovelModel input) {
+        public async Task<List<NovelResult>> Create(NovelModel[] novels) {
 
-            var newNovel = _mapper.Map<Novels>(input);
+            var newNovels = new List<NovelResult>();
 
-            newNovel.TimeCreated = DateTime.UtcNow;
+            foreach (var novel in novels) {
 
-            await _dbContext.AddAsync(newNovel).ConfigureAwait(false);
+                var newNovel = _mapper.Map<Novels>(novel);
 
-            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+                newNovel.TimeCreated = DateTime.UtcNow;
 
-            var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
+                await _dbContext.AddAsync(newNovel).ConfigureAwait(false);
 
-            if (result > 0) {
+                var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
-                await _cache.UpsertAsync(_pathValue, newNovel.Id, newNovel, ct.Token);
+                var result = await _dbContext.SaveChangesAsync(ct.Token).ConfigureAwait(false);
+
+                if (result > 0) {
+
+                    await _cache.UpsertAsync(_pathValue, newNovel.Id, newNovel, ct.Token);
+                }
+
+                if (result == 1) {
+
+                    newNovels.Add(_mapper.Map<NovelResult>(newNovel));
+                }
             }
 
-            return result == 1 ? _mapper.Map<NovelResult>(newNovel) : null;
+            return newNovels;
         }
 
         public async Task<List<NovelResult>> GetAll(int? novelId = null) {
@@ -75,7 +85,7 @@
                     .Include(c => c.Chapters)
                     .Include(c => c.NovelGenres)
                     .ThenInclude(c => c.Genres)
-                    .Where(c=>c.Id == (novelId ?? c.Id))
+                    .Where(c => c.Id == (novelId ?? c.Id))
                 select new Novels {
                     Id = novel.Id,
                     Name = novel.Name,
@@ -124,11 +134,14 @@
 
                 if (cacheResult != null) {
 
-                    var cacheResultMapped = cacheResult as List<NovelResult>;
+                    if (cacheResult is List<object> cachedObjects) {
 
-                    {
-                        list = cacheResultMapped;
-                        return true;
+                        var cacheNovelList = cachedObjects.Select(cachedObject => _mapper.Map<NovelResult>(cachedObject)).ToList();
+
+                        {
+                            list = cacheNovelList;
+                            return true;
+                        }
                     }
                 }
             }
