@@ -10,8 +10,8 @@ using WuxiaWorld.DAL.Entities;
 namespace WuxiaWorld.DAL.Migrations
 {
     [DbContext(typeof(WuxiaWorldDbContext))]
-    [Migration("20200325174102_RemoveChapterTitle")]
-    partial class RemoveChapterTitle
+    [Migration("20200326073711_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

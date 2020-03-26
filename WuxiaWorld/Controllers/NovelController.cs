@@ -39,8 +39,8 @@
 
                 return Ok(novel.FirstOrDefault());
             }
-            catch (NoRecordFoundException) {
-                return NoContent();
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
             }
         }
 

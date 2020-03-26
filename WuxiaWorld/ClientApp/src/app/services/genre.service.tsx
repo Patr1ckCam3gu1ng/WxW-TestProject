@@ -48,7 +48,8 @@ export default {
                     return genre;
                 });
                 return state;
-            });
+            })
+            .catch(errorHelper.errorCode(action));
 
         return state;
     },

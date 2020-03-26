@@ -119,6 +119,10 @@
 
                     return novelResult;
                 }
+                else {
+
+                    throw new NoRecordFoundException("No novel record in the database");
+                }
             }
 
             throw new NoRecordFoundException("Novel not found");

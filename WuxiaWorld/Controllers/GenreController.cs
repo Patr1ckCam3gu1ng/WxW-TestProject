@@ -33,8 +33,8 @@
             try {
                 return Ok(await _genreService.GetAll());
             }
-            catch (NoRecordFoundException) {
-                return NoContent();
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
             }
             catch {
                 return BadRequest(ExceptionError.Message);
@@ -50,8 +50,8 @@
 
                 return Ok(result);
             }
-            catch (NoRecordFoundException) {
-                return NoContent();
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
             }
             catch {
                 return BadRequest(ExceptionError.Message);
@@ -65,8 +65,8 @@
             try {
                 return Ok(await _genreService.Create(genres));
             }
-            catch (NoRecordFoundException) {
-                return NoContent();
+            catch (NoRecordFoundException exception) {
+                return BadRequest(exception.Message);
             }
             catch (RecordAlreadyExistsException exception) {
                 return BadRequest(exception.Message);

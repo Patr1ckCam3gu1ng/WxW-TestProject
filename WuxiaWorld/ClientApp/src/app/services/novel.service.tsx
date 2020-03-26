@@ -18,7 +18,8 @@ export default {
                     action.print('');
                     return novel;
                 });
-            });
+            })
+            .catch(errorHelper.errorCode(action));
         return;
     },
     create: (action: Action, jwtToken: string): void => {

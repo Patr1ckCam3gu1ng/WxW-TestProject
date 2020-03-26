@@ -32,7 +32,8 @@ export default {
                         })
                         .then(value => {
                             return value.data;
-                        });
+                        })
+                        .catch(error => helper.throwError(error));
                 })();
             },
             novels: (authenticationHeader: string): Promise<Novel[]> => {
@@ -43,7 +44,8 @@ export default {
                         })
                         .then(value => {
                             return value.data;
-                        });
+                        })
+                        .catch(error => helper.throwError(error));
                 })();
             },
             chapterByNovelId: (

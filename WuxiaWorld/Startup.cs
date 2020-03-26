@@ -72,13 +72,13 @@ namespace WuxiaWorld {
             app.RegisterSslRequired();
             app.RegisterMvcRouting();
 
-            // app.UseSpa(spa => {
-            //     spa.Options.SourcePath = "ClientApp";
-            //
-            //     if (env.IsDevelopment()) {
-            //         spa.UseReactDevelopmentServer("start");
-            //     }
-            // });
+            app.UseSpa(spa => {
+                spa.Options.SourcePath = "ClientApp";
+            
+                if (env.IsDevelopment()) {
+                    spa.UseReactDevelopmentServer("start");
+                }
+            });
         }
     }
 

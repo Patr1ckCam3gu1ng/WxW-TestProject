@@ -29,6 +29,10 @@
                 throw new NoRecordFoundException("Genre not found");
             }
 
+            if (result.Count == 0) {
+                throw new NoRecordFoundException("No genre record in the database");
+            }
+
             return result;
         }
 
