@@ -21,10 +21,12 @@
 
             CreateMap<Genres, IdNameModel>();
 
+            CreateMap<ChapterInput, Chapters>()
+                .ForMember(c => c.ChapterNumber,
+                    f => f.MapFrom(c => c.Number));
             CreateMap<ChapterModel, Chapters>()
                 .ForMember(c => c.ChapterNumber,
                     f => f.MapFrom(c => c.Number));
-
             CreateMap<Chapters, ChapterModel>().ForMember(c => c.Number,
                 f => f.MapFrom(c => c.ChapterNumber));
 

@@ -28,7 +28,7 @@
             _mapper = mapper ?? throw new ArgumentNullException(nameof(chapterRepository));
         }
 
-        public async Task<ChapterModel> Create(int novelId, ChapterModel input) {
+        public async Task<ChapterModel> Create(int novelId, ChapterInput input) {
 
             var novelByChapterNumber = await _chapterRepository.GetByChapterNumber(novelId, input.Number);
 

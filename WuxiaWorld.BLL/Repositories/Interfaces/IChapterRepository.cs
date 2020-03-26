@@ -7,7 +7,7 @@
 
     public interface IChapterRepository {
 
-        Task<Chapters> Create(int novelId, ChapterModel input);
+        Task<Chapters> Create(int novelId, ChapterInput input);
 
 
         Task<Chapters> GetByChapterNumber(int novelId, int chapterNumber);

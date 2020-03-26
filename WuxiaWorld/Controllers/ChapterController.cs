@@ -55,7 +55,7 @@
 
         [HttpPost]
         [Route("{novelId}/chapters")]
-        public async Task<IActionResult> New([FromBody] ChapterModel input, int novelId) {
+        public async Task<IActionResult> New([FromBody] ChapterInput input, int novelId) {
 
             try {
                 return Ok(await _chapterService.Create(novelId, input));

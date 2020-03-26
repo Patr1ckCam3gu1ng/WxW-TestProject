@@ -15,10 +15,16 @@ function getNovelGenreIds(splitNovelGenre: string[]): GenreNovel {
     splitNovelGenre.map(value => {
         const code = value.replace(/"/g, '');
         if (code.indexOf('novel') > -1) {
-            novelId = Number(code.split(' ')[1]);
+            const indexNovelId = code.split(' ')[1];
+            if (!isNaN(indexNovelId as any)) {
+                novelId = Number(indexNovelId);
+            }
         }
         if (code.indexOf('genre') > -1) {
-            genreId = Number(code.split(' ')[1]);
+            const indexGenreId = code.split(' ')[1];
+            if (!isNaN(indexGenreId as any)) {
+                genreId = Number(indexGenreId);
+            }
         }
         return value;
     });
@@ -137,7 +143,7 @@ export default {
                 }
             }
         }
-        action.print('Error: Incorrect input was provided');
+        syntaxError.print(action, 'assign-genre "novel {novelId}" "genre {genreId}"');
         return state;
     },
 };

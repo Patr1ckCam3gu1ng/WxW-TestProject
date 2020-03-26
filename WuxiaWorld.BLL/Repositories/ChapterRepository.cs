@@ -39,7 +39,7 @@
             _cancelTokenFromSeconds = cancelToken.Value.FromSeconds;
         }
 
-        public async Task<Chapters> Create(int novelId, ChapterModel input) {
+        public async Task<Chapters> Create(int novelId, ChapterInput input) {
 
             var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
 
@@ -127,7 +127,7 @@
                 .ConfigureAwait(false);
 
             if (chapter == null) {
-                throw new NovelChapterNotFoundException("Record not found");
+                throw new NovelChapterNotFoundException("Chapter not found for this given 'novel id' and/or 'chapter id'");
             }
 
             chapter.ChapterPublishDate = DateTime.UtcNow;

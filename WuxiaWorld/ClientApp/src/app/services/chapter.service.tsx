@@ -64,22 +64,24 @@ export default {
                 const chapterContent = splitChapterInputs[2];
                 const novelId = splitChapterInputs[3];
 
-                if (!isNaN(chapterNumber as any) && !isNaN(novelId as any)) {
-                    apis.post()
-                        .novelChapter(jwtToken, {
-                            number: Number(chapterNumber),
-                            name: chapterTitle,
-                            content: chapterContent,
-                            novelId: Number(novelId),
-                        } as Chapter)
-                        .then((data: Chapter) => {
-                            if (data.id !== 0) {
-                                action.print('Success: Chapter successfully created for this novel');
-                            }
-                        })
-                        .catch(errorHelper.errorCode(action));
+                if (chapterNumber.trim() !== '' && novelId.trim() !== '') {
+                    if (!isNaN(chapterNumber as any) && !isNaN(novelId as any)) {
+                        apis.post()
+                            .novelChapter(jwtToken, {
+                                number: Number(chapterNumber),
+                                name: chapterTitle,
+                                content: chapterContent,
+                                novelId: Number(novelId),
+                            } as Chapter)
+                            .then((data: Chapter) => {
+                                if (data.id !== 0) {
+                                    action.print('Success: Chapter successfully created for this novel');
+                                }
+                            })
+                            .catch(errorHelper.errorCode(action));
 
-                    return;
+                        return;
+                    }
                 }
             }
         }
