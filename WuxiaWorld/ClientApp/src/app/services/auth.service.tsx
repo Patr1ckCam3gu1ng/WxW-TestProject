@@ -7,7 +7,7 @@ export default {
     jwtToken: (action: Action): string => {
         const jwtToken = localStorage.getItem('jwtToken')?.toString() || '';
         if (jwtToken === '') {
-            action.print('User not yet authenticated. Please login');
+            action.print('Error: User not yet authenticated. Please login.');
         }
         return jwtToken;
     },

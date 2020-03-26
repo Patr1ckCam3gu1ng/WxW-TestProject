@@ -34,7 +34,7 @@ const TerminalComponent = () => {
                 barColor="black"
                 style={{ fontWeight: 'bold', fontSize: '1em' }}
                 commands={commands(genreDispatch, authDispatch, chapterDispatch, novelDispatch, setJwtToken)}
-                msg={'Welcome to WuxiaWold. Enter command to begin:'}
+                msg={'Welcome to WuxiaWorld. Enter the command to begin:'}
                 allowTabs={false}
             />
         </div>

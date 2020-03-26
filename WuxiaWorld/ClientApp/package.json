@@ -1,7 +1,7 @@
 {
   "name": "wuxiaworld-cli",
   "version": "1.0.0",
-  "description": "Test project for Wuxiaworld job application",
+  "description": "Test project for WuxiaWorld job application",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build"

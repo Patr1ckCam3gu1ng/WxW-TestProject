@@ -1,9 +1,9 @@
 import apis from '../api';
 import helper from './splitString.service';
-import { ErrorMessage } from './throwError.service';
 import { Novel } from '../models/novel.interface';
 import { Action } from '../models/action.interface';
-import { ApiError } from '../models/apiError.interface';
+import errorHelper from '../services/throwError.service';
+import syntaxError from './syntaxError.service';
 
 export default {
     list: (jwtToken: string, action: Action): void => {
@@ -27,6 +27,9 @@ export default {
             if (splitNovel.length > 0) {
                 const novelList: Novel[] = [];
                 splitNovel.map(novel => {
+                    if (novel.trim() === '') {
+                        return novel;
+                    }
                     novelList.push({
                         name: novel,
                     } as Novel);
@@ -40,16 +43,12 @@ export default {
                                 action.print('Ok: Novel added to the database ');
                                 return novel;
                             })
-                            .catch(function(error: ApiError) {
-                                if (error.code === 401) {
-                                    action.print(ErrorMessage.AdminRole);
-                                }
-                            });
+                            .catch(errorHelper.errorCode(action));
                         return;
                     }
                 }
             }
         }
-        action.print('Error: Please enter the correct command to create a novel');
+        syntaxError.print(action, 'create novels {1_novel_name} {2_novel_name}');
     },
 };

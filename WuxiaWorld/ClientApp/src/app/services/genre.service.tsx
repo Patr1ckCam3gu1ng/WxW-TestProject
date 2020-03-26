@@ -1,6 +1,8 @@
-import errorHelper, { ErrorMessage } from './throwError.service';
+import errorHelper from './throwError.service';
 import helper from './splitString.service';
 import apis from '../api';
+import syntaxError from './syntaxError.service';
+
 import { GenreNovel } from '../models/genreNovel.interface';
 import { Genre } from '../models/genre.interface';
 import { Inputbox } from '../models/inputbox';
@@ -48,7 +50,6 @@ export default {
         if (Array.isArray(action.inputValue) === true) {
             const splitInputs = helper.splitQuoteString(action.inputValue) as string[];
             if (splitInputs.length > 0) {
-                console.log(splitInputs);
                 if (splitInputs.length === 3) {
                     if (splitInputs[0] === 'genres' && splitInputs[2] === 'novels') {
                         const genreId = splitInputs[1];
@@ -79,11 +80,7 @@ export default {
                 }
             }
         }
-        action.runCommand('clear');
-        setTimeout(() => {
-            action.print(ErrorMessage.InvalidSyntax);
-            action.print('list genres {genreId} novels');
-        }, 100);
+        syntaxError.print(action, 'list genres {genreId} novels');
         return state;
     },
     create: (action: Action, jwtToken: string, state: Inputbox): Inputbox => {
@@ -114,12 +111,8 @@ export default {
                 }
             }
         }
-        action.runCommand('clear');
-        setTimeout(() => {
-            const nameGenreText = 'name_of_genre';
-            action.print(ErrorMessage.InvalidSyntax);
-            action.print(`create genres {1_${nameGenreText}} {2_${nameGenreText}} {3_${nameGenreText}}`);
-        }, 100);
+        const nameGenreText = 'name_of_genre';
+        syntaxError.print(action, `create genres {1_${nameGenreText}} {2_${nameGenreText}} {3_${nameGenreText}}`);
         return state;
     },
     assign: (action: Action, jwtToken: string, state: Inputbox, isUnAssign: boolean | null): Inputbox => {

@@ -1,10 +1,12 @@
-import helper from './splitString.service';
 import apis from '../api';
-import { ErrorMessage } from './throwError.service';
+
+import helper from './splitString.service';
+import syntaxError from './syntaxError.service';
+import errorHelper from '../services/throwError.service';
+
 import { ChapterPublish } from '../models/chapterPublish.interface';
 import { Action } from '../models/action.interface';
 import { Chapter } from '../models/chapter.interface';
-import errorHelper from '../services/throwError.service';
 
 function getApiChapterByNovelId(
     jwtToken: string,
@@ -81,11 +83,7 @@ export default {
                 }
             }
         }
-        action.runCommand('clear');
-        setTimeout(() => {
-            action.print(ErrorMessage.InvalidSyntax);
-            action.print('create-chapter {chapterNumber} {chapterTitle} {chapterContent} {novelId}');
-        }, 100);
+        syntaxError.print(action, 'create-chapter {chapterNumber} {chapterTitle} {chapterContent} {novelId}');
         return;
     },
     publish: (jwtToken: string, action: Action): void => {
@@ -110,11 +108,7 @@ export default {
                 }
             }
         }
-        action.runCommand('clear');
-        setTimeout(() => {
-            action.print(ErrorMessage.InvalidSyntax);
-            action.print('publish novels {novelId} chapters {chapterNumber}');
-        }, 100);
+        syntaxError.print(action, 'publish novels {novelId} chapters {chapterNumber}');
         return;
     },
     chapterByNovelId: (jwtToken: string, action: Action): void => {
@@ -130,11 +124,7 @@ export default {
                 }
             }
         }
-        action.runCommand('clear');
-        setTimeout(() => {
-            action.print(ErrorMessage.InvalidSyntax);
-            action.print('list novels {novelId} chapters');
-        }, 100);
+        syntaxError.print(action, 'list novels {novelId} chapters');
         return;
     },
     chapterContents: (jwtToken: string, action: Action): void => {
@@ -151,11 +141,7 @@ export default {
                 }
             }
         }
-        action.runCommand('clear');
-        setTimeout(() => {
-            action.print(ErrorMessage.InvalidSyntax);
-            action.print('chapter-content novels {novelId}');
-        }, 100);
+        syntaxError.print(action, 'chapter-content novels {novelId}');
         return;
     },
 };

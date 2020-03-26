@@ -130,6 +130,7 @@ export default function(
                         type: Commands.NovelCreate,
                         inputValue: args._.filter((value: string, index: number) => index > 0),
                         print,
+                        runCommand
                     } as Action);
                     return;
                 } else {

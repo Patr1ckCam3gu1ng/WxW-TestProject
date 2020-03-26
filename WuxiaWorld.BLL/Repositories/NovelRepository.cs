@@ -156,6 +156,18 @@
             throw new NoRecordFoundException("Novel not found");
         }
 
+        public async Task<bool> IsIdsExist(IEnumerable<string> novelNames) {
+
+            var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_cancelTokenFromSeconds));
+
+            return await _dbContext.Novels
+                .Select(c=>c.Name.ToLower())
+                .Where(dbNovelName =>
+                    novelNames.Any(f => f == dbNovelName))
+                .AnyAsync(ct.Token)
+                .ConfigureAwait(false);
+        }
+
         #region Cache Management
 
         private bool GetNovelCache(int? novelId, out List<NovelResult> list) {

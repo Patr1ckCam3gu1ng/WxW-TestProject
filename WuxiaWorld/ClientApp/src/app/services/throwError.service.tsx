@@ -2,7 +2,7 @@ import { ApiError } from '../models/apiError.interface';
 import { Action } from '../models/action.interface';
 
 export class ErrorMessage {
-    static AdminRole = 'Error: The admin user is the only one who can write to the repo.';
+    static AdminRole = "Error: The 'admin' user is the only one who can write to the repo.";
     static InvalidSyntax = 'Error: Invalid syntax. Syntax should be:';
 }
 

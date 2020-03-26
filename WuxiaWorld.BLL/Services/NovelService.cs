@@ -2,6 +2,7 @@
 
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using DAL.Models;
@@ -22,6 +23,13 @@
         }
 
         public async Task<List<NovelResult>> Create(NovelModel[] novels) {
+
+            var isAtLeastOneNovelAlreadyExists = await _novelRepository.IsIdsExist(novels.Select(c => c.Name.ToLowerInvariant()));
+
+            if (isAtLeastOneNovelAlreadyExists) {
+
+                throw new OneOrMoreNovelAlreadyExists();
+            }
 
             var newNovels = await _novelRepository.Create(novels).ConfigureAwait(false);
 

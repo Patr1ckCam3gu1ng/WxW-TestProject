@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CommandInputBox from '../components/terminal.component';
+import TerminalCommand from '../components/terminal.component';
 import GenreContextProvider from '../contexts/genre.context';
 import AuthContextProvider from '../contexts/auth.context';
 import ChapterContextProvider from '../contexts/chapter.context';
@@ -12,7 +12,7 @@ function TerminalContainer() {
             <NovelContextProvider>
                 <GenreContextProvider>
                     <ChapterContextProvider>
-                        <CommandInputBox />
+                        <TerminalCommand />
                     </ChapterContextProvider>
                 </GenreContextProvider>
             </NovelContextProvider>

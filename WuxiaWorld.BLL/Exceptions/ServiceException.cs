@@ -52,6 +52,12 @@
         }
     }
 
+    public class OneOrMoreNovelAlreadyExists : ServiceException {
+        public OneOrMoreNovelAlreadyExists(string message = "One or more novel already exists in the database") :
+            base(message) {
+        }
+    }
+
     public class NovelGenreAlreadyExists : ServiceException {
         public NovelGenreAlreadyExists(string message = "Genre already assigned to this Novel") : base(message) {
         }

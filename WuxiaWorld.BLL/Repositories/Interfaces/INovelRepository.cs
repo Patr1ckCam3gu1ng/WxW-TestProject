@@ -14,6 +14,9 @@
 
 
         Task<List<NovelResult>> GetByGenderId(int genreId);
+
+
+        Task<bool> IsIdsExist(IEnumerable<string> novelNames);
     }
 
 }
