@@ -155,6 +155,10 @@
                     return mappedNovelResults;
 
                 }
+                else {
+
+                    throw new NoRecordFoundException("No novel were assigned with this genre");
+                }
             }
 
             throw new NoRecordFoundException("Novel not found");

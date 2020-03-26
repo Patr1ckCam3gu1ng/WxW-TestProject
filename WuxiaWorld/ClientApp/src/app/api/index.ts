@@ -64,7 +64,8 @@ export default {
                         )
                         .then(value => {
                             return value.data;
-                        });
+                        })
+                        .catch(error => helper.throwError(error));
                 })();
             },
             genreByNovelId: (authenticationHeader: string, genreId: number): Promise<Novel[]> => {
@@ -75,7 +76,8 @@ export default {
                         })
                         .then(value => {
                             return value.data;
-                        });
+                        })
+                        .catch(error => helper.throwError(error));
                 })();
             },
         };
