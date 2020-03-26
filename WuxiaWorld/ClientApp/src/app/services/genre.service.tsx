@@ -92,6 +92,9 @@ export default {
             if (splitGenres.length > 0) {
                 const genreList: Genre[] = [];
                 splitGenres.map(genre => {
+                    if (genre.trim() === '') {
+                        return genre;
+                    }
                     genreList.push({
                         name: genre,
                     } as Genre);
@@ -111,7 +114,12 @@ export default {
                 }
             }
         }
-        action.print('Error: Please enter the correct command to create a genre');
+        action.runCommand('clear');
+        setTimeout(() => {
+            const nameGenreText = 'name_of_genre';
+            action.print(ErrorMessage.InvalidSyntax);
+            action.print(`create genres {1_${nameGenreText}} {2_${nameGenreText}} {3_${nameGenreText}}`);
+        }, 100);
         return state;
     },
     assign: (action: Action, jwtToken: string, state: Inputbox, isUnAssign: boolean | null): Inputbox => {

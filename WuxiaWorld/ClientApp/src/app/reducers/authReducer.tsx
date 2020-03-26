@@ -14,5 +14,6 @@ export const authReducer = (state: string, action: AuthAction): string => {
             break;
         }
     }
+
     return state;
 };

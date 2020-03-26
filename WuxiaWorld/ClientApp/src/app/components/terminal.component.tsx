@@ -1,19 +1,20 @@
 import React, { useContext } from 'react';
 import Terminal from 'terminal-in-react';
 
-import { GenreContext } from '../contexts/genre.context';
 import { AuthContext } from '../contexts/auth.context';
 import { ChapterContext } from '../contexts/chapter.context';
 import { NovelContext } from '../contexts/novel.context';
+import { GenreContext } from '../contexts/genre.context';
 
 import commands from '../services/command.service';
-import { authContext } from '../models/authContext.interface';
+
 import { CommonContext } from '../models/commonContext.inteface';
+import { GenreReducerContext } from '../models/genreReducerContext';
+import { AuthReducerContext } from '../models/authContext.interface';
 
 const TerminalComponent = () => {
-    // @ts-ignore
-    const { dispatch: genreDispatch } = useContext(GenreContext);
-    const { setJwtToken, dispatch: authDispatch } = useContext(AuthContext) as authContext;
+    const { dispatch: genreDispatch } = useContext(GenreContext) as GenreReducerContext;
+    const { setJwtToken, dispatch: authDispatch } = useContext(AuthContext) as AuthReducerContext;
     const { dispatch: chapterDispatch } = useContext(ChapterContext) as CommonContext;
     const { dispatch: novelDispatch } = useContext(NovelContext) as CommonContext;
 
@@ -24,6 +25,7 @@ const TerminalComponent = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
+                fontSize: '1.3em',
             }}
         >
             <Terminal

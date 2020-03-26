@@ -1,4 +1,4 @@
-export interface authContext {
+export interface AuthReducerContext {
     jwtToken: string;
     setJwtToken: any;
     dispatch: any;
